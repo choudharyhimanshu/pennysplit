@@ -13,6 +13,16 @@ pennysplit.config(function($stateProvider, $urlRouterProvider) {
     .state('welcome', {
       	url: '/',
       	templateUrl: "/assets/partials/welcome.html",
-      	controller : 'WelcomeCtrl'
+      	controller: 'WelcomeCtrl'
+    })
+    .state('create', {
+      	url: '/create/:slug',
+      	templateUrl: "/assets/partials/create.html",
+      	controller: 'CreateCtrl'
+    })
+    .state('view', {
+      	url: '/view/:slug',
+      	templateUrl: "/assets/partials/view.html",
+      	controller: "ViewCtrl"
     });
 });
