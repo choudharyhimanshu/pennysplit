@@ -1,0 +1,57 @@
+
+.landing-jumbotron {
+	min-height: 400px;
+	padding-top: 100px;
+	color: #fff;
+	background-size: cover;
+	background-position: center;
+	background-image: url('/assets/img/dark.jpg');
+	text-align: center;
+}
+
+.landing-jumbotron .heading {
+	font-size: 36pt;
+}
+
+.landing-jumbotron .description {
+	font-size: 18pt;
+}
+
+.landing-jumbotron button {
+	padding-left: 50px;
+	padding-right: 50px;
+	font-size: 18pt;
+}
+
+#start_now_modal {
+	text-align: center;
+}
+
+.howworks-jumbotron {
+	padding: 100px 0px 100px 0px;
+}
+
+.howworks-card {
+	margin-top: 50px;
+}
+
+.howworks-card .thumb {
+	position: relative;
+	width: 100%;
+	font-size: 28pt;
+	text-align: center;
+}
+
+.howworks-card .caption {
+	/*margin-top: 20px;*/
+	font-size: 16pt;
+}
+
+.whyus-jumbotron {
+	padding: 50px 0px 50px 0px;
+	background-color: #fff;
+}
+
+.whyus-heading {
+	margin-bottom: 50px;
+}
