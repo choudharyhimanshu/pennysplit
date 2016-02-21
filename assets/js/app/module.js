@@ -16,7 +16,7 @@ pennysplit.config(function($stateProvider, $urlRouterProvider) {
       	controller: 'WelcomeCtrl'
     })
     .state('create', {
-      	url: '/create/:slug',
+      	url: '/create/',
       	templateUrl: "/assets/partials/create.html",
       	controller: 'CreateCtrl'
     })

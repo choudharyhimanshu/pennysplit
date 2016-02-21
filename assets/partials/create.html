@@ -1,42 +1,51 @@
 <div class="row create-container">
 	<div class="container">
 		<div class="col-md-6 col-sm-12">
-			<form class="form-horizontal form-create">
-			  	<div class="form-group">
-			  	    <label for="inputEmail3" class="col-sm-3 control-label">Event Name</label>
+			<form name="createForm" class="form-horizontal">
+			  	<div class="form-group" ng-class="{'has-error' : (createForm.$submitted || createForm.title.$touched) && createForm.title.$error.required}">
+			  	    <label for="createFormTitle" class="col-sm-3 control-label">Event Name</label>
 			  	    <div class="col-sm-9">
-			  	      	<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+			  	      	<input type="text" class="form-control" id="createFormTitle" name="title" ng-model="create.title" ng-model-options="{ updateOn: 'blur' }" placeholder="Title" required>
 			  	    </div>
 			  	</div>
 			  	<div class="form-group">
-			  	    <label for="inputEmail3" class="col-sm-3 control-label">Currency</label>
+			  	    <label for="createFormCurrency" class="col-sm-3 control-label">Currency</label>
 			  	    <div class="col-sm-9">
-			  	      	<select class="form-control">
-			  	      		<option selected="selected">INR</option>
-			  	      		<option>USD</option>
+			  	      	<select class="form-control" id="createFormCurrency" name="currency" ng-model="create.currency" required>
+			  	      		<option value="INR">INR</option>
+			  	      		<option value="USD">USD</option>
 			  	      	</select>
 			  	    </div>
 			  	</div>
 			  	<div class="form-group">
-			  	    <label for="inputEmail3" class="col-sm-3 control-label">Add member</label>
+			  	    <label for="createFormNewMember" class="col-sm-3 control-label">Add member</label>
 			  	    <div class="col-sm-9">
-			  	      	<div class="input-group">
-			  	      	      <input type="text" class="form-control" placeholder="Member name">
-			  	      	      <span class="input-group-btn">
-			  	      	        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-			  	      	      </span>
-			  	      	    </div>
+		  	      		<div class="input-group">
+		  	      			<input type="text" class="form-control" placeholder="Member name" id="createFormNewMember" ng-model="new_member" ng-model-options="{ updateOn: 'blur' }">
+		  	      			<span class="input-group-btn">
+		  	      			    <button class="btn btn-default" type="button" ng-click="addMember()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+		  	      			</span>
+		  	      		</div>
 			  	    </div>
+			  	</div>
+			  	<div >
+
+			  	</div>
+			  	<div class="text-center">
+				  	<p class="text-warning" ng-show="createForm.$submitted && create.members.length < 2">Minimum two members required.</p>
+				  	<p class="text-warning" ng-show="create.members.length >= 50">Minimum limit of members is 50.</p>
+			  	</div>
+			  	<div class="form-group">
+			  		<div class="col-md-4 col-md-offset-4 col-sm-12 col-xs-12">
+					  	<input type="submit" ng-click="submit()" class="btn btn-primary btn-lg btn-block" value="Create"/>
+			  		</div>
 			  	</div>
 			</form>
 		</div>
-		<div class="col-md-5 col-md-offset-1 col-sm-12 form-create-preview">
+		<div class="col-md-5 col-md-offset-1 col-sm-12 form-create-preview" ng-show="create.members.length">
 		 	<h3>Members</h3>
 		 	<ul>
-		 		<li>Mem 1<button class="pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></li>
-		 		<li>Mem 2<button class="pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></li>
-		 		<li>Mem 3<button class="pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></li>
-		 		<li>Mem 4<button class="pull-right"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></li>
+		 		<li ng-repeat="member in create.members">{{member.name}}<button class="pull-right" ng-click="removeMember(member.id)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></li>
 		 	</ul>
 		</div>
 	</div>
