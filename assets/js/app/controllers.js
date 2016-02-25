@@ -50,3 +50,7 @@ pennysplit.controller('CreateCtrl', ['$scope', function($scope){
 pennysplit.controller('ViewCtrl', ['$rootScope','$stateParams', function($rootScope,$stateParams){
 	$rootScope.slug = $stateParams.slug;
 }]);
+
+pennysplit.controller('EditCtrl', ['$rootScope','$stateParams', function($rootScope,$stateParams){
+	$rootScope.slug = $stateParams.slug;
+}]);

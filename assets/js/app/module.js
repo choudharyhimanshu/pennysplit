@@ -20,9 +20,23 @@ pennysplit.config(function($stateProvider, $urlRouterProvider) {
       	templateUrl: "/assets/partials/create.html",
       	controller: 'CreateCtrl'
     })
+    .state('edit', {
+        url: '/edit/:slug',
+        templateUrl: "/assets/partials/edit.html",
+        controller: 'EditCtrl'
+    })
     .state('view', {
       	url: '/view/:slug',
       	templateUrl: "/assets/partials/view.html",
       	controller: "ViewCtrl"
     });
 });
+
+pennysplit.run(['$rootScope', function($rootScope){
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+        // console.log(fromState,toState);
+    });
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
+        // console.log(fromState,toState);
+    });
+}]);
