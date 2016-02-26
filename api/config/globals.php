@@ -15,6 +15,9 @@
 
 	include 'db_config.php';
 	include 'classes/class.db.php';
+	include 'classes/class.event.php';
+	include 'classes/class.helper.php';
+	include 'classes/class.security.php';
 
 	require 'vendor/autoload.php';
 

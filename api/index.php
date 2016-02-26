@@ -7,9 +7,11 @@
 		
 	include 'config/globals.php';
 
-	$app->get('/hello/:name', function ($name) {
-	    echo "Hello, " . $name;
+	$app->get('/', function () {
+	    echo "Hello World!";
 	});
+
+	$app->post('/event/create', 'Event:createNew');
 
 	$app->run();
 ?>

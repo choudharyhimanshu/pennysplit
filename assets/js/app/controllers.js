@@ -3,15 +3,16 @@ pennysplit.controller('WelcomeCtrl', ['$scope','$rootScope', function($scope,$ro
 	console.log('WelcomeCtrl');
 }]);
 
-pennysplit.controller('CreateCtrl', ['$scope', function($scope){
+pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($scope,$state,EventSrv){
 
 	var count_members = 0;
 
 	$scope.new_member = '';
-
+	$scope.is_loading = false;
 	$scope.create = {
 		title : '',
 		currency : 'INR',
+		owner : '',
 		members : []
 	};
 
@@ -42,7 +43,20 @@ pennysplit.controller('CreateCtrl', ['$scope', function($scope){
 	}
 
 	$scope.submit = function(){
-		// do something
+		if($scope.createForm.$valid && $scope.create.members.length > 0){
+			$scope.message = 'Loading..';
+			$scope.is_loading = true;
+			EventSrv.createEvent($scope.create).success(function(response){
+				if(response.success == true){
+					$state.go('edit',{slug:response.data.slug},{reload:true});
+				}
+				$scope.is_loading = false;
+				$scope.message = response.message;
+			}).error(function(response){
+				$scope.is_loading = false;
+				$scope.message = 'Some error occured. Please try again later.';
+			});
+		}
 	};
 	
 }]);

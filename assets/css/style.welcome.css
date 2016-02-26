@@ -79,3 +79,18 @@
 	color: #fff;
 	background-color: #1abc9c;
 }
+
+.footer {
+	padding: 20px 0px 20px 0px;
+	background-color: #34495e;
+	color: #fff;
+}
+
+.footer .info {
+	font-size: 16pt;
+	text-align: center;
+}
+
+.footer .contact{
+	font-size: 12pt;
+}

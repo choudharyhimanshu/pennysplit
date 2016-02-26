@@ -40,3 +40,7 @@ pennysplit.run(['$rootScope', function($rootScope){
         // console.log(fromState,toState);
     });
 }]);
+
+pennysplit.constant('GLOBALS', {
+    'API_BASE' : '/api/'
+});
