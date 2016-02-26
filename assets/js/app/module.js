@@ -29,6 +29,10 @@ pennysplit.config(function($stateProvider, $urlRouterProvider) {
       	url: '/view/:slug',
       	templateUrl: "/assets/partials/view.html",
       	controller: "ViewCtrl"
+    })
+    .state('about', {
+        url: '/about/',
+        templateUrl: "/assets/partials/about.html"
     });
 });
 

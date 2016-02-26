@@ -12,6 +12,8 @@
 	});
 
 	$app->post('/event/create', 'Event:createNew');
+	$app->get('/event/view/private/:slug', 'Event:getPrivate');
+	$app->get('/event/view/public/:slug', 'Event:getPublic');
 
 	$app->run();
 ?>
