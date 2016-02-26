@@ -1,7 +1,7 @@
 body {
 	background-color: #fff;
-	word-break: break-all;
 }
+
 .custom-navbar {
 	/*padding: 5px 0px 5px 0px;*/
 	margin: 0px;
@@ -9,19 +9,26 @@ body {
 	background-color: #34495e;
 	border:none;
 	border-radius: 0px;
+	position: fixed;
+	top: 0px;
+	left:0px;
+	width: 100%;
 }
 .custom-navbar .navbar-brand {
 	color: #fff;
 	font-size: 1.5em;
+	width: 80%;
 }
 .custom-navbar .navbar-brand:hover {color: #fff;}
 /*.custom-navbar .navbar-nav > li:hover {border-bottom: 2px inset #fff;}*/
-.custom-navbar .navbar-nav > li > a {color: #fff;}
+/*.custom-navbar .navbar-nav > li {padding-left: 5px; padding-right: 5px; }*/
+.custom-navbar .navbar-nav > li > a {color: #fff; padding-left: 5px; padding-right: 5px;}
+.custom-navbar .navbar-nav > li > a:hover {color: #fff;}
 .custom-navbar .navbar-toggle {border-color: #fff;}
 .custom-navbar .navbar-toggle .icon-bar {background-color : #fff;}
 .custom-navbar .nav-btn {
-	margin: 5px auto 5px auto;
-	padding: 10px 30px 10px 30px;
+	margin: 5px auto 5px 5px;
+	padding: 10px 30px 10px 30px !important;
 	color: #fff;
 	background-color: #16a085;
 	border: none;
@@ -36,3 +43,48 @@ body {
 	color: #fff;
 	background-color: #1abc9c;
 }
+
+.footer {
+	padding: 20px 0px 20px 0px;
+}
+
+.footer .info {
+	font-size: 16pt;
+	text-align: center;
+}
+
+.footer .contact {
+	font-size: 12pt;
+}
+
+.footer .contact .section {
+	padding: 15px 0px 15px 0px; 
+}
+
+.azm-size-48 {
+	width: 48px;
+	height: 48px;
+	margin: 8px;
+	padding-top: 13px;
+	font-size: 21px;
+	line-height: 21px;
+}
+
+.azm-social {
+	margin: 0;
+	padding: 13px;
+	display: inline-block;
+	color: #fff;
+	text-align: center;
+	-moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+	-o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
+}
+.azm-social:hover, .azm-social:focus, .azm-social:active { outline: 0; opacity: 0.8; color: #fff; }
+
+.azm-circle {
+	-moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%;
+}
+
+.azm-email-2 { background: #35c7ed; }
+.azm-facebook { background: #4862a3; }
+.azm-twitter { background: #55acee; }
