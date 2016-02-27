@@ -69,7 +69,26 @@ pennysplit.controller('EditCtrl', ['$scope','$rootScope','$stateParams','EventSr
 	if($stateParams.slug){
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			$scope.event_data = response.data;
-			console.log(response);
+			$scope.form_expense = {
+				name : '',
+				payers : [{
+					id : '',
+					amount : ''
+				}],
+				payees : []
+			};
+			$scope.addPayer = function(){
+				$scope.form_expense.payers.push({
+					id : '',
+					amount : ''
+				});
+			}
+			$scope.removePayer = function(index){
+				$scope.form_expense.payers.splice(index,1);
+			}
+			$scope.submitExpense = function(){
+				console.log($scope.form_expense);
+			}
 		}).error(function(response){
 			console.log(response);
 		});

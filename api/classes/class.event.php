@@ -9,6 +9,7 @@ class Event {
 
 	public function createNew(){
 		Global $app, $db;
+		$db->connect();
 	    $app->response->headers->set('Content-Type', 'application/json');
 
 	    $body = $app->request->getBody();
@@ -32,7 +33,6 @@ class Event {
 	    	$slug = $title_slug.'-'.Helper::generateRandomString();
 	    	$view_slug = $title_slug.'-'.Helper::generateRandomString();
 
-	    	$db->connect();
 	    	$res = $db->conn->query("INSERT INTO event (slug,view_slug,title,currency,created_by,created_on) VALUES ('$slug','$view_slug','$title','$currency','$owner',$time)");
 	    	if($res){
 	    		$fkeid = $db->conn->insert_id;
