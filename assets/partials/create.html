@@ -3,9 +3,9 @@
 		<div class="col-md-6 col-sm-12">
 			<form name="createForm" class="form-horizontal">
 			  	<div class="form-group" ng-class="{'has-error' : (createForm.$submitted || createForm.title.$touched) && createForm.title.$error.required}">
-			  	    <label for="createFormTitle" class="col-sm-3 control-label">Event Name</label>
+			  	    <label for="createFormTitle" class="col-sm-3 control-label">Event Name*</label>
 			  	    <div class="col-sm-9">
-			  	      	<input type="text" class="form-control" id="createFormTitle" name="title" ng-model="create.title" ng-model-options="{ updateOn: 'blur' }" placeholder="Title" maxlength="50" required>
+			  	      	<input type="text" class="form-control" id="createFormTitle" name="title" ng-model="create.title" ng-model-options="{ updateOn: 'blur' }" placeholder="What was the occasion?" maxlength="50" required>
 			  	    </div>
 			  	</div>
 			  	<div class="form-group">
@@ -18,16 +18,16 @@
 			  	    </div>
 			  	</div>
 			  	<div class="form-group" ng-class="{'has-error' : (createForm.$submitted || createForm.title.$touched) && createForm.owner.$error.required}">
-			  	    <label for="createFormOwner" class="col-sm-3 control-label">Your Name</label>
+			  	    <label for="createFormOwner" class="col-sm-3 control-label">Your Name*</label>
 			  	    <div class="col-sm-9">
-			  	      	<input type="text" class="form-control" id="createFormOwner" name="owner" ng-model="create.owner" ng-model-options="{ updateOn: 'blur' }" placeholder="Full Name" maxlength="60" required>
+			  	      	<input type="text" class="form-control" id="createFormOwner" name="owner" ng-model="create.owner" ng-model-options="{ updateOn: 'blur' }" placeholder="How do others call you?" maxlength="60" required>
 			  	    </div>
 			  	</div>
 			  	<div class="form-group">
 			  	    <label for="createFormNewMember" class="col-sm-3 control-label">Add buddy</label>
 			  	    <div class="col-sm-9">
 		  	      		<div class="input-group">
-		  	      			<input type="text" class="form-control" placeholder="Buddy name" id="createFormNewMember" ng-model="new_member" ng-model-options="{ updateOn: 'blur' }" maxlength="60">
+		  	      			<input type="text" class="form-control" placeholder="Who were you with?" id="createFormNewMember" ng-model="new_member" ng-model-options="{ updateOn: 'blur' }" maxlength="60">
 		  	      			<span class="input-group-btn">
 		  	      			    <button class="btn btn-default" type="button" ng-click="addMember()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
 		  	      			</span>
@@ -38,12 +38,12 @@
 
 			  	</div>
 			  	<div class="text-center">
-				  	<p class="text-warning" ng-show="createForm.$submitted && create.members.length < 1">Minimum two members required.</p>
-				  	<p class="text-warning" ng-show="create.members.length >= 50">Minimum limit of members is 50.</p>
+				  	<p class="text-warning" ng-show="createForm.$submitted && create.members.length < 1">If you do not add minimum two members, you owe everything to yourself.</p>
+				  	<p class="text-warning" ng-show="create.members.length >= 50">Do not add more than 50 members as we do not have an accountant.</p>
 			  	</div>
 			  	<div class="form-group">
 			  		<div class="col-md-4 col-md-offset-4 col-sm-12 col-xs-12">
-					  	<input type="submit" ng-click="submit()" class="btn btn-primary btn-lg btn-block" ng-class="{'disabled' : is_loading}" value="Create"/>
+					  	<input type="submit" ng-click="submit()" class="btn btn-primary btn-lg btn-block" ng-class="{'disabled' : is_loading}" value="Create Event"/>
 			  		</div>
 			  	</div>
 			</form>
@@ -51,7 +51,7 @@
 		</div>
 		<div class="col-md-5 col-md-offset-1 col-sm-12 form-create-preview">
 			<div class="row-fluid" ng-show="create.owner">
-				<h3>Owner</h3>
+				<h3>Created By:</h3>
 				<ul>
 					<li>{{create.owner}}</li>
 				</ul>

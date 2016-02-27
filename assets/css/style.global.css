@@ -70,9 +70,18 @@ body {
 	line-height: 21px;
 }
 
+.azm-size-32 {
+	width: 32px;
+	height: 32px;
+	margin: 6px;
+	padding-top: 8px;
+	font-size: 14px;
+	line-height: 14px;
+}
+
 .azm-social {
 	margin: 0;
-	padding: 13px;
+	padding: 8px;
 	display: inline-block;
 	color: #fff;
 	text-align: center;
