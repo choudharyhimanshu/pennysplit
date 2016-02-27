@@ -68,6 +68,7 @@
 .howworks-card .keyword {
 	font-size: 25pt;
 	font-variant: small-caps;
+
 }
 
 .whyus-jumbotron {
@@ -75,10 +76,10 @@
 	background-color: #ecf0f1;
 	border-bottom: 3px solid #2c3e50;
 }
-.whyus-card h3 {
+/*.whyus-card h3 {
 	color: #2c3e50;
 }
-
+*/
 .whyus-card p{
 	font-size: 12pt;
 }
@@ -107,3 +108,71 @@
 	color: #fff;
 	background-color: #1abc9c;
 }
+
+
+
+.team-jumbotron {
+	padding: 50px 0px 50px 0px;
+	border-bottom: 3px solid #2c3e50;
+}
+
+.team-jumbotron h1 {
+	font-variant: small-caps;
+}
+
+
+.team-card {
+	margin-top: 50px;
+}
+
+.team-card .thumb {
+	position: relative;
+	width: 50%;
+	font-size: 35pt;
+	text-align: center;
+}
+
+
+.team-card .keyword  {
+	font-size: 25pt;
+	font-variant: small-caps;
+}
+
+
+
+.team-card .caption h2{
+	/*margin-top: 20px;*/
+	font-size: 16pt;
+	font-style: italic;
+}
+
+.team-card .caption p{
+	/*margin-top: 20px;*/
+	font-size: 14pt;
+}
+.credits-jumbotron {
+	padding: 20px 0px 20px 0px;
+	background-color: #ecf0f1;
+	border-bottom: 3px solid #2c3e50;
+}
+
+.credits-head{
+	text-align: left;
+	font-size: 15pt;
+}
+
+.credits-card p{
+	text-align: left;
+	font-size: 12pt;
+}
+
+.credits-heading {
+	margin-left: 60px;
+	margin-bottom: 10px;
+	font-variant: small-caps;
+	font-size: 20pt;
+
+}
+
+
+
