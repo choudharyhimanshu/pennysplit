@@ -8,7 +8,6 @@
 	background-position: top-left;
 	background-image: url('../img/landing_back.jpg');
 	text-align: center;
-	border-bottom: 3px solid #2c3e50;
 	border-top: 3px solid #000;
 }
 
@@ -41,7 +40,7 @@
 
 .howworks-jumbotron {
 	padding: 50px 0px 50px 0px;
-	border-bottom: 3px solid #2c3e50;
+	border-top: 3px solid #2c3e50;
 }
 
 .howworks-jumbotron h1 {
@@ -74,7 +73,7 @@
 .whyus-jumbotron {
 	padding: 20px 0px 20px 0px;
 	background-color: #ecf0f1;
-	border-bottom: 3px solid #2c3e50;
+	border-top: 3px solid #2c3e50;
 }
 /*.whyus-card h3 {
 	color: #2c3e50;
@@ -113,7 +112,7 @@
 
 .team-jumbotron {
 	padding: 50px 0px 50px 0px;
-	border-bottom: 3px solid #2c3e50;
+	border-top: 3px solid #000;
 }
 
 .team-jumbotron h1 {
@@ -125,7 +124,7 @@
 }
 
 .team-card .keyword {
-	margin: 50px 0px 0px 0px;
+	margin: 40px 0px 0px 0px;
 	padding: 0px;
 	font-size: 25pt;
 	font-variant: small-caps;
@@ -140,7 +139,7 @@
 .credits-jumbotron {
 	padding: 20px 0px 20px 0px;
 	background-color: #ecf0f1;
-	border-bottom: 3px solid #2c3e50;
+	border-top: 3px solid #2c3e50;
 }
 
 .credits-head{
