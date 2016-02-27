@@ -8,8 +8,8 @@
 	error_reporting(-1);
 	ini_set('display_errors', 'On');
 
-	define('APP_BASE', 'http://local.pennysplit.com/');
-	define('API_BASE', 'http://local.pennysplit.com/api/');
+	define('APP_BASE', 'http://local.pennysplit.com');
+	define('API_BASE', 'http://local.pennysplit.com/api');
 	define('PENNY_SALT', 'k!cK$0me@s$');
 	
 

@@ -97,7 +97,7 @@ class Event {
 	    		$response['data']['currency'] = $row['currency'];
 	    		$response['data']['owner'] = $row['created_by'];
 	    		$response['data']['created_on'] = $row['created_on'];
-	    		$response['data']['members'] = array(
+	    		$response['data']['members'][] = array(
 	    			'id' => $row['mid'],
 	    			'name' => $row['name'],
 	    			'added_on' => $row['added_on']
@@ -113,6 +113,9 @@ class Event {
 	    		}
 
 	    		$response['data']['members_count'] = $count_mem;
+	    		$response['data']['edit_url'] = APP_BASE.'/edit/'.$response['data']['slug'];
+	    		$response['data']['view_url'] = APP_BASE.'/view/'.$response['data']['view_slug'];
+
 	    		$response['success'] = TRUE;
 	    		$response['message'] = 'Successfully fetched the event.';
 	    	}

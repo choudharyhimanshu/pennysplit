@@ -68,7 +68,7 @@ pennysplit.controller('ViewCtrl', ['$rootScope','$stateParams', function($rootSc
 pennysplit.controller('EditCtrl', ['$scope','$rootScope','$stateParams','EventSrv', function($scope,$rootScope,$stateParams,EventSrv){
 	if($stateParams.slug){
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
-			$scope.slug = response.data.slug;
+			$scope.event_data = response.data;
 			console.log(response);
 		}).error(function(response){
 			console.log(response);

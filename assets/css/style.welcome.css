@@ -120,36 +120,24 @@
 	font-variant: small-caps;
 }
 
-
 .team-card {
 	margin-top: 50px;
 }
 
-.team-card .thumb {
-	position: relative;
-	width: 50%;
-	font-size: 35pt;
-	text-align: center;
-}
-
-
-.team-card .keyword  {
+.team-card .keyword {
+	margin: 50px 0px 0px 0px;
+	padding: 0px;
 	font-size: 25pt;
 	font-variant: small-caps;
-}
-
-
-
-.team-card .caption h2{
-	/*margin-top: 20px;*/
-	font-size: 16pt;
-	font-style: italic;
+	line-height: 0.5em;
 }
 
 .team-card .caption p{
-	/*margin-top: 20px;*/
+	margin: 10px 0px 10px 0px;
+	line-height: 1em;
 	font-size: 14pt;
 }
+
 .credits-jumbotron {
 	padding: 20px 0px 20px 0px;
 	background-color: #ecf0f1;
@@ -159,6 +147,7 @@
 .credits-head{
 	text-align: left;
 	font-size: 15pt;
+	text-decoration: underline;
 }
 
 .credits-card p{
@@ -167,11 +156,9 @@
 }
 
 .credits-heading {
-	margin-left: 60px;
 	margin-bottom: 10px;
 	font-variant: small-caps;
 	font-size: 20pt;
-
 }
 
 
