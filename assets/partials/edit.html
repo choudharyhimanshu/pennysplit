@@ -1,14 +1,30 @@
 <div class="row">
 	<div class="container">
 		<div class="row-fluid">
-			<h1>{{slug}}</h1>
+			<h1>{{event_data.title}}</h1>
 		</div>
+		<hr>
 		<div class="row">
 			<div class="col-md-8">
 				<h2>Add expenses</h2>
 			</div>
 			<div class="col-md-4">
-				<h3>Members</h3>
+				<h3 class="text-center">Overview</h3>
+				<div class="row-fluid">
+					<div class="row-fluid">
+						<h4>Created by</h4>
+						<p>{{event_data.owner}}</p>
+						<h4>Buddies</h4>
+						<ul>
+							<li ng-repeat="member in event_data.members">{{member.name}}</li>
+						</ul>
+						<div>
+							Link : <a ui-sref="edit({slug : event_data.slug})">{{event_data.edit_url}}</a>
+							<br>
+							Non-editable Link : <a ui-sref="view({slug : event_data.view_slug})">{{event_data.view_url}}</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>		
 	</div>
