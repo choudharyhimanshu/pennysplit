@@ -46,6 +46,10 @@ pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($sco
 		if($scope.createForm.$valid && $scope.create.members.length > 0){
 			$scope.message = 'Loading..';
 			$scope.is_loading = true;
+			$scope.create.members.push({
+				id : count_members++,
+				name : $scope.create.owner
+			});
 			EventSrv.createEvent($scope.create).success(function(response){
 				if(response.success == true){
 					$state.go('edit',{slug:response.data.slug},{reload:true});
@@ -87,8 +91,23 @@ pennysplit.controller('EditCtrl', ['$scope','$rootScope','$stateParams','EventSr
 				$scope.form_expense.payers.splice(index,1);
 			}
 			$scope.submitExpense = function(){
-				console.log($scope.form_expense);
+				if($scope.expenseForm.$valid){
+					console.log($scope.form_expense);
+					alert('submitted!');
+				}
 			}
+
+			$scope.$watch('flag_mul_payer',function(newValue){
+				if(newValue){
+					$scope.form_expense.payers.push({
+						id : '',
+						amount : ''
+					});
+				}
+				else {
+					$scope.form_expense.payers = [$scope.form_expense.payers[0]];
+				}
+			});
 		}).error(function(response){
 			console.log(response);
 		});
