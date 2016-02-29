@@ -61,7 +61,7 @@ class Helper {
         Global $db;
         if (is_array($input)) {
             foreach($input as $var=>$val) {
-                $output[$var] = sanitize($val);
+                $output[$var] = SELF::sanitize($val);
             }
         }
         else {

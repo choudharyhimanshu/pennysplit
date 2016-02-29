@@ -90,3 +90,27 @@ body {
 .azm-linkedin { background: #0177b5; }
 .azm-git { background: #f64d27; }
 
+.btn-addmore {
+	width: 40px;
+	height: 40px;
+	border: none;
+	border-radius: 20px;
+	margin: 10px;
+	color: #fff;
+	background-color: #16a085; 
+	text-align: center;
+}
+
+.inp-payer select, input, button {
+	margin-top: 10px;
+}
+
+.inp-payer button {
+	/*margin: 5px;*/
+	/*background: none;*/
+	/*border: none;*/
+}
+
+.inp-payer button:hover {
+	/*color: #3498db;*/
+}
