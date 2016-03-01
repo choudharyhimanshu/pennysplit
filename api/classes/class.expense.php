@@ -1,0 +1,81 @@
+<?php
+	
+/**
+	* @author Himanshu Choudhary
+	* @email himanshuchoudhary@live.com
+*/
+
+class Expense {
+	public function add($slug)
+	{
+		Global $app, $db;
+		$db->connect();
+	    $app->response->headers->set('Content-Type', 'application/json');
+
+	    $body = $app->request->getBody();
+	    $params = json_decode($body,TRUE);
+	    $params = Helper::sanitize($params);
+
+	    $slug = isset($slug) ? Helper::sanitize($slug) : '';
+	    $name = isset($params['name']) ? $params['name'] : '';
+	    $payers = isset($params['payers']) ? $params['payers'] : [];
+	    $payees = isset($params['payees']) ? $params['payees'] : [];
+
+	    $tot_amount = 0.0;
+
+	    for ($i=0; $i < sizeof($payers); $i++) {
+	    	$payers[$i]['id'] = (int)$payers[$i]['id'];
+	    	$payers[$i]['amount'] = (float)$payers[$i]['amount'];
+	    	$tot_amount += $payers[$i]['amount'];
+	    }
+
+	    $response = array(
+	    	'success' => FALSE,
+	    	'message' => '',
+	    	'data' => NULL
+	    );
+
+	    if($slug != '' && $name != '' && sizeof($payers)>0 && sizeof($payees)>0){
+	    	$time = time();
+	    	$fk_eid = Security::getIdFromSlug($slug);
+	    	if($fk_eid != NULL){
+		    	$res = $db->conn->query("INSERT INTO expenses (fk_eid,name,created_on,tot_amount) VALUES ($fk_eid,'$name',$time,$tot_amount)");
+	    		if($res){
+		    		$fk_xid = $db->conn->insert_id;
+		    		$values = [];
+		    		foreach( $payers as $payer ) {
+		    		    $values[] = '('.$fk_xid.','.$payer['id'].',"'.$payer['name'].'",'.$payer['amount'].')';
+		    		}
+		    		$res = $db->conn->query('INSERT INTO payers (fk_exid,mid,name,amount) VALUES '.implode(',', $values));
+		    		if($res){
+		    			$values = [];
+		    			foreach( $payees as $payee ) {
+		    			    $values[] = '('.$fk_xid.','.$payee['id'].',"'.$payee['name'].'")';
+		    			}
+		    			$res = $db->conn->query('INSERT INTO payees (fk_exid,mid,name) VALUES '.implode(',', $values));
+		    			if($res){
+		    				$response['success'] = TRUE;
+		    				$response['message'] = "Successfully added expense.";
+		    			}
+		    			else{
+			    			$response['message'] = "Unable to add payees. Error : ".$db->conn->error;
+		    			}
+		    		}
+		    		else{
+		    			$response['message'] = "Unable to add payers. Error : ".$db->conn->error;
+		    		}
+	    		}
+	    		else {
+		    		$response['message'] = "Unable to add expense. Error : ".$db->conn->error;
+	    		}
+	    	}
+	    	else {
+    			$response['message'] = 'Some error occurred.';
+	    	}
+	    }
+
+	    $db->close();
+	    $app->response->write(json_encode($response));
+	}
+}
+?>

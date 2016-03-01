@@ -15,6 +15,7 @@
 	$app->put('/event/edit/:slug', 'Event:edit');
 	$app->get('/event/view/private/:slug', 'Event:getPrivate');
 	$app->get('/event/view/public/:slug', 'Event:getPublic');
+	$app->post('/expense/add/:slug', 'Expense:add');
 
 	$app->run();
 ?>

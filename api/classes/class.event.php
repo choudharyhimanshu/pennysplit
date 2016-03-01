@@ -124,7 +124,7 @@ class Event {
 	    			}
 	    		}
 	    		else {
-	    				$response['message'] = 'Error : '.$db->conn->error;
+	    			$response['message'] = 'Some error occurred.';
 	    		}	    		
 	    	}
 	    	else {

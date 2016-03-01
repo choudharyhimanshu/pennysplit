@@ -1,5 +1,5 @@
 
-pennysplit.service('EventSrv', ['$http','GLOBALS', function($http,GLOBALS){
+pennysplit.service('EventSrv', ['$http','$stateParams','GLOBALS', function($http,$stateParams,GLOBALS){
 	this.createEvent = function(form_data){
 		return $http.post(GLOBALS.API_BASE+'event/create',form_data);
 	}
@@ -8,5 +8,8 @@ pennysplit.service('EventSrv', ['$http','GLOBALS', function($http,GLOBALS){
 	}
 	this.getPvtEvent = function(slug){
 		return $http.get(GLOBALS.API_BASE+'event/view/private/'+slug);
+	}
+	this.addExpense = function(slug,form_data){
+		return $http.post(GLOBALS.API_BASE+'expense/add/'+slug,form_data);
 	}
 }]);
