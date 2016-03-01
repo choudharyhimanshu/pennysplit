@@ -7,7 +7,7 @@
 
 class Event {
 
-	public function createNew(){
+	public function create(){
 		Global $app, $db;
 		$db->connect();
 	    $app->response->headers->set('Content-Type', 'application/json');
@@ -56,6 +56,76 @@ class Event {
 	    		else {
 	    			$response['message'] = "Unable to add buddies. Error : ".$db->conn->error;
 	    		}
+	    	}
+	    	else {
+	    		$response['message'] = "Unable to create event. Error : ".$db->conn->error;
+	    	}
+	    }
+	    else {
+	    	$response['message'] = 'Invalid Form Data.';
+	    }
+
+	    $db->close();
+	    $app->response->write(json_encode($response));
+	}
+
+	public function edit($slug){
+		Global $app, $db;
+		$db->connect();
+	    $app->response->headers->set('Content-Type', 'application/json');
+
+	    $body = $app->request->getBody();
+	    $params = json_decode($body,TRUE);
+	    $params = Helper::sanitize($params);
+
+	    $slug = isset($slug) ? Helper::sanitize($slug) : '';
+	    $title = isset($params['title']) ? $params['title'] : '';
+	    $currency = isset($params['currency']) ? $params['currency'] : 'INR';
+	    $owner = isset($params['owner']) ? $params['owner'] : '';
+	    $members = isset($params['members']) ? $params['members'] : [];
+
+	    $response = array(
+	    	'success' => FALSE,
+	    	'message' => '',
+	    	'data' => NULL
+	    );
+
+	    if($slug != '' && $title != '' && $owner != '' && sizeof($members)>0){
+	    	$time = time();
+
+	    	$res = $db->conn->query("UPDATE event SET title='$title',currency= '$currency',created_by='$owner' WHERE slug='$slug'");
+	    	if($res){
+	    		$fkeid = Security::getIdFromSlug($slug);
+
+	    		if($fkeid != NULL){
+	    			$res = $db->conn->query("DELETE FROM buddies WHERE fk_eid='$fkeid'");
+	    			if($res){
+	    				$values = [];
+	    				foreach( $members as $member ) {
+	    				    $values[] = '('.$fkeid.','.$member['id'].',"'.$member['name'].'",'.$time.')';
+	    				}
+	    				$res = $db->conn->query('INSERT INTO buddies (fk_eid,mid,name,added_on) VALUES '.implode(',', $values));
+	    				if($res) {
+	    					$response['success'] = TRUE;
+	    					$response['message'] = "Successfully updated event.";
+	    					$response['data'] = array(
+	    						'title' => $title,
+	    						'currency' => $currency,
+	    						'owner' => $owner,
+	    						'slug' => $slug
+	    					);
+	    				}
+	    				else {
+	    					$response['message'] = "Unable to add buddies. Error : ".$db->conn->error;
+	    				}
+	    			}
+	    			else {
+	    				$response['message'] = "Unable to delete buddies. Error : ".$db->conn->error;
+	    			}
+	    		}
+	    		else {
+	    				$response['message'] = 'Error : '.$db->conn->error;
+	    		}	    		
 	    	}
 	    	else {
 	    		$response['message'] = "Unable to create event. Error : ".$db->conn->error;

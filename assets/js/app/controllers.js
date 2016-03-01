@@ -122,6 +122,67 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope', function($scope,
 	});
 }]);
 
-pennysplit.controller('EditEventCtrl', ['$scope','$rootScope', function($scope,$rootScope){
-	console.log('EditEventCtrl');
+pennysplit.controller('EditEventCtrl', ['$scope','$state','EventSrv', function($scope,$state,EventSrv){
+	var count_members = 0;
+	var maxId = function(arr){
+		var id = 0;
+		for (var i = arr.length - 1; i >= 0; i--) {
+			if(arr[i].id > id){
+				id = arr[i].id;
+			}
+		}
+		return id;
+	}
+
+	$scope.$watch('event_data',function(val){
+		if(val){
+			count_members = maxId($scope.event_data.members); // To be FIXED!!
+
+			$scope.is_loading = false;
+			$scope.create = {
+				title : $scope.event_data.title,
+				currency : $scope.event_data.currency,
+				owner : $scope.event_data.owner,
+				members : $scope.event_data.members
+			};
+		}
+	});
+
+	$scope.addMember = function(){
+		if($scope.create.members.length < 50){
+			$scope.create.members.push({
+				id : count_members++,
+				name : ''
+			});
+		}
+	};
+
+	$scope.removeMember = function(member_id){
+		var index = null;
+		for(var i = 0; i < $scope.create.members.length; i++){
+			if($scope.create.members[i].id == member_id){
+				index = i;
+			}
+		}
+		if(index != null){
+			$scope.create.members.splice(index,1);
+		}
+	}
+
+	$scope.submitEditEvent = function(){
+		if($scope.createForm.$valid && $scope.create.members.length > 0){
+			$scope.message = 'Loading..';
+			$scope.is_loading = true;
+			EventSrv.updateEvent($scope.event_data.slug,$scope.create).success(function(response){
+				if(response.success == true){
+					$state.go('edit.expense_add',{slug:response.data.slug},{reload:true});
+				}
+				$scope.is_loading = false;
+				$scope.message = response.message;
+			}).error(function(response){
+				$scope.is_loading = false;
+				$scope.message = 'Some error occured. Please try again later.';
+			});
+		}
+	};
 }]);

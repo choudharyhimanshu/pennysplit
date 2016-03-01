@@ -11,7 +11,8 @@
 	    echo "Hello World!";
 	});
 
-	$app->post('/event/create', 'Event:createNew');
+	$app->post('/event/create', 'Event:create');
+	$app->put('/event/edit/:slug', 'Event:edit');
 	$app->get('/event/view/private/:slug', 'Event:getPrivate');
 	$app->get('/event/view/public/:slug', 'Event:getPublic');
 
