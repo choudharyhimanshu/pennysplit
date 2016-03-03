@@ -85,7 +85,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','EventSrv', function(
 	var checkForTrue = function(arr){
 		var flag = false;
 		for (var i = arr.length - 1; i >= 0; i--) {
-			if (arr[i] == true){
+			if (arr[i].flag == true){
 				flag = true;
 				break;
 			}
@@ -100,14 +100,32 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','EventSrv', function(
 			}
 		}
 	}
+
 	$scope.form_expense = {
 		name : '',
-		payers : [{
-			id : '',
-			amount : ''
-		}],
+		payers : [],
 		payees : []
 	};
+
+	$scope.$watch('event_data',function(val){
+		if(val){
+			for (var i = 0; i < $scope.event_data.members.length; i++) {
+
+				$scope.form_expense.payers.push({
+					id : $scope.event_data.members[i].id,
+					name : $scope.event_data.members[i].name,
+					amount : ''
+				});
+
+				$scope.form_expense.payees.push({
+					id : $scope.event_data.members[i].id,
+					name : $scope.event_data.members[i].name,
+					flag : true
+				});
+			}
+		}
+	})
+	
 	$scope.addPayer = function(){
 		$scope.flag_min_payers = false;
 		$scope.form_expense.payers.push({
@@ -125,22 +143,17 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','EventSrv', function(
 	}
 	$scope.submitExpense = function(){
 		if($scope.expenseForm.$valid && checkForTrue($scope.form_expense.payees)){
-			// $scope.form_expense.members = $scope.event_data.members;
-			for (var i = $scope.form_expense.payers.length - 1; i >= 0; i--) {
-				// $scope.form_expense.payers[i].id = parseInt($scope.form_expense.payers[i].id);
-				$scope.form_expense.payers[i].name = getNameFromId($scope.event_data.members,$scope.form_expense.payers[i].id);
-			}
-			var payees = [];
+			var form_expense_master = {
+				name : $scope.form_expense.name,
+				payers : $scope.form_expense.payers,
+				payees : []
+			};
 			for (var i = $scope.form_expense.payees.length - 1; i >= 0; i--) {
-				if($scope.form_expense.payees[i] == true){
-					payees.push({
-						id : i,
-						name : getNameFromId($scope.event_data.members,i)
-					});
+				if($scope.form_expense.payees[i].flag == true){
+					form_expense_master.payees.push($scope.form_expense.payees[i]);
 				}
 			}
-			$scope.form_expense.payees = payees;
-			EventSrv.addExpense($scope.event_data.slug,$scope.form_expense).success(function(response){
+			EventSrv.addExpense($scope.event_data.slug,form_expense_master).success(function(response){
 				if(response.success == true){
 					$state.go('edit.expense_add',{slug:$scope.event_data.slug},{reload:true});
 				}
@@ -153,15 +166,6 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','EventSrv', function(
 			$scope.message = 'Invalid inputs.';
 		}
 	}
-
-	$scope.$watch('flag_mul_payer',function(newValue){
-		if(newValue){
-			$scope.addPayer();
-		}
-		else {
-			$scope.form_expense.payers = [$scope.form_expense.payers[0]];
-		}
-	});
 }]);
 
 pennysplit.controller('EditEventCtrl', ['$scope','$state','EventSrv', function($scope,$state,EventSrv){

@@ -7,19 +7,11 @@
 	  	</div>
 	  	<div class="form-group">
 	    	<label for="expenseFormPaidBy">Paid by</label>
-	    	<div class="checkbox">
-	    	    <label>
-	    	      	<input type="checkbox" value="{{member.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-model="flag_mul_payer">Multiple People
-	    	    </label>
-	    	</div>
 	    	<div class="row inp-payer" ng-repeat="payer in form_expense.payers">
-	    		<div class="col-md-6">
-	    			<select class="form-control" name="expenseFormPayer" id="expenseFormPayer" ng-model="payer.id" required>
-	    				<option value="">Name</option>
-	    				<option ng-repeat="member in event_data.members | orderBy:'name'" value="{{member.id}}">{{member.name}}</option>
-	    			</select>
+	    		<div class="col-md-4">
+	    			<p>{{payer.name}}</p>
 	    		</div>
-	    		<div class="col-md-6">
+	    		<div class="col-md-8">
 	    			<div class="input-group">
 	  	      			<input type="number" step="0.1" min="0" max="10000000" class="form-control" name="expenseFormPaidAmount" id="expenseFormPaidAmount" ng-model="payer.amount" placeholder="Amount" required>
 						<span class="input-group-btn">
@@ -28,9 +20,6 @@
       			    </div>
 	    		</div>
 	    	</div>
-	    	<button type="button" class="btn btn-default btn-block" ng-click="addPayer()" style="margin-top: 5px;" ng-show="flag_mul_payer">
-	    		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-	    	</button>
 	    	<p class="help-block" ng-show="flag_min_payers">Someone did pay. Right?</p>
 	  	</div>
 	  	<div class="form-group">
@@ -40,9 +29,9 @@
 	  		      	<input type="checkbox" value="{{member.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-init="flag_share_all = true" ng-model="flag_share_all">All
 	  		    </label>
 	  		</div>
-	  		<div class="checkbox" ng-show="!flag_share_all" ng-repeat="member in event_data.members | orderBy:'name'">
+	  		<div class="checkbox" ng-show="!flag_share_all" ng-repeat="payee in form_expense.payees | orderBy:'name'">
 	  		    <label>
-	  		      	<input type="checkbox" value="{{member.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-init="form_expense.payees[member.id] = true" ng-model="form_expense.payees[member.id]">{{member.name}}
+	  		      	<input type="checkbox" value="{{payee.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-model="payee.flag">{{payee.name}}
 	  		    </label>
 	  		</div>
 	  	</div>

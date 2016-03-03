@@ -154,12 +154,14 @@ class Event {
 	    	'data' => NULL
 	    );
 
-	    $res = $db->conn->query("SELECT slug,view_slug,title,currency,created_on,created_by,mid,name,added_on FROM event INNER JOIN buddies ON event.eid = buddies.fk_eid WHERE event.slug = '$slug'");
+	    $res = $db->conn->query("SELECT eid,slug,view_slug,title,currency,created_on,created_by,mid,name,added_on FROM event INNER JOIN buddies ON event.eid = buddies.fk_eid WHERE event.slug = '$slug'");
 
 	    if ($res) {
 	    	if($res->num_rows > 0){
 	    		$count_mem = 1;
 	    		$row = $res->fetch_assoc();
+
+	    		$eid = $row['eid'];
 
 	    		$response['data']['slug'] = $row['slug'];
 	    		$response['data']['view_slug'] = $row['view_slug'];
@@ -185,6 +187,67 @@ class Event {
 	    		$response['data']['members_count'] = $count_mem;
 	    		$response['data']['edit_url'] = APP_BASE.'/edit/'.$response['data']['slug'];
 	    		$response['data']['view_url'] = APP_BASE.'/view/'.$response['data']['view_slug'];
+
+	    		$res = $db->conn->query("SELECT expenses.exid, expenses.name, expenses.created_on, expenses.tot_amount, payers.mid as `payer_id`, payers.name as `payer_name`, payers.amount as `payer_amount` FROM expenses LEFT JOIN payers ON payers.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
+
+	    		if($res){
+	    			if($res->num_rows > 0){
+	    				$row = $res->fetch_assoc();
+
+	    				$count_exp = 0; 
+
+	    				$prev_exid = $row['exid'];
+	    				$response['data']['expenses'][] = array(
+	    					'id' => $row['exid'],
+	    					'name' => $row['name'],
+	    					'created_on' => $row['created_on'],
+	    					'tot_amount' => $row['tot_amount'],
+	    					'payers' => [],
+	    					'payees' => []
+	    				);
+
+	    				$response['data']['expenses'][$count_exp]['payers'][] = array(
+	    					'id' => $row['payer_id'],
+	    					'name' => $row['payer_name'],
+	    					'amount' => $row['payer_amount'] 
+	    				);
+
+	    				while ($row = $res->fetch_assoc()) {
+	    					if($row['exid'] != $prev_exid){
+	    						$prev_exid = $row['exid'];
+	    						$response['data']['expenses'][] = array(
+	    							'id' => $row['exid'],
+	    							'name' => $row['name'],
+	    							'created_on' => $row['created_on'],
+	    							'tot_amount' => $row['tot_amount'],
+	    							'payers' => [],
+	    							'payees' => []
+	    						);
+
+	    						$count_exp++;
+
+	    						$response['data']['expenses'][$count_exp]['payers'][] = array(
+	    							'id' => $row['payer_id'],
+	    							'name' => $row['payer_name'],
+	    							'amount' => $row['payer_amount'] 
+	    						);
+	    					}
+	    					else {
+	    						$response['data']['expenses'][$count_exp]['payers'][] = array(
+	    							'id' => $row['payer_id'],
+	    							'name' => $row['payer_name'],
+	    							'amount' => $row['payer_amount'] 
+	    						);
+	    					}
+	    				}
+	    			}
+	    			else {
+	    				$response['message'] = 'Expenses not found.';
+	    			}
+	    		}
+	    		else {
+		    		$response['message'] = 'Could not fetch the expenses.';
+	    		}
 
 	    		$response['success'] = TRUE;
 	    		$response['message'] = 'Successfully fetched the event.';
