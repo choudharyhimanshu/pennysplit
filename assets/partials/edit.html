@@ -21,10 +21,13 @@
 			<div class="row-fluid">
 				<h4>Expenses</h4>
 				<ul>
-					<li>Item</li>
-					<li>Item</li>
-					<li>Item</li>
-					<li>Item</li>
+					<li ng-repeat="expense in event_data.expenses | orderBy: 'name'">
+						{{expense.name}}
+						<div class="pull-right">
+							<span><a href="">Edit</a></span>
+							<span><a href="" ng-click="removeExpense(expense.id)">Delete</a></span>
+						</div>
+					</li>
 				</ul>
 			</div>
 		</div>

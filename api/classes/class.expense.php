@@ -77,5 +77,50 @@ class Expense {
 	    $db->close();
 	    $app->response->write(json_encode($response));
 	}
+
+	public function delete($slug,$exid)
+	{
+		Global $app, $db;
+	    $app->response->headers->set('Content-Type', 'application/json');
+
+	    $db->connect();
+
+	    $exid = Helper::sanitize($exid);
+
+	    $response = array(
+	    	'success' => FALSE,
+	    	'message' => '',
+	    	'data' => NULL
+	    );
+
+	    $eid = Security::getIdFromSlug($slug);
+
+	    if($eid != NULL){
+	    	$res = $db->conn->query("SELECT exid FROM expenses WHERE fk_eid=$eid AND exid=$exid");
+
+	    	if($res && $res->num_rows == 1){
+	    		$res = $db->conn->multi_query("DELETE FROM payers WHERE fk_exid=$exid;
+	    			DELETE FROM payees WHERE fk_exid=$exid;
+	    			DELETE FROM expenses WHERE exid=$exid;");
+
+	    		if ($res) {
+	    			$response['success'] = TRUE;
+	    			$response['message'] = 'Successfully deleted the expense.';
+	    		}
+	    		else {
+	    			$response['message'] = 'Could not delete the expense. Error : '.$db->conn->error;
+	    		}
+	    	}
+	    	else {
+		    	$response['message'] = 'Invalid expense.';
+	    	}
+	    }
+	    else {
+	    	$response['message'] = 'Invalid slug.';
+	    }
+
+	    $db->close();
+	    $app->response->write(json_encode($response));
+	}
 }
 ?>

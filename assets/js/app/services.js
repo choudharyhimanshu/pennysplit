@@ -12,4 +12,7 @@ pennysplit.service('EventSrv', ['$http','$stateParams','GLOBALS', function($http
 	this.addExpense = function(slug,form_data){
 		return $http.post(GLOBALS.API_BASE+'expense/add/'+slug,form_data);
 	}
+	this.deleteExpense = function(slug,exid){
+		return $http.delete(GLOBALS.API_BASE+'expense/delete/'+slug+'/'+exid);
+	}
 }]);

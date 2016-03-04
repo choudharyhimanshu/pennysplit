@@ -67,7 +67,7 @@ pennysplit.controller('ViewCtrl', ['$rootScope','$stateParams', function($rootSc
 	$rootScope.slug = $stateParams.slug;
 }]);
 
-pennysplit.controller('EditCtrl', ['$scope','$rootScope','$stateParams','EventSrv', function($scope,$rootScope,$stateParams,EventSrv){
+pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv', function($scope,$state,$stateParams,EventSrv){
 	if($stateParams.slug){
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			$scope.event_data = response.data;
@@ -77,6 +77,19 @@ pennysplit.controller('EditCtrl', ['$scope','$rootScope','$stateParams','EventSr
 	}
 	else {
 		$scope.message = 'Invalid URL.';
+	}
+
+	$scope.removeExpense = function(exid){
+		if (exid !== undefined) {
+			EventSrv.deleteExpense($stateParams.slug,exid).success(function(response){
+				if (response.success == true) {
+					$state.go($state.current, {}, {reload: true});
+				}
+				$scope.message = response.message;
+			}).error(function(response){
+				$scope.message = 'Could not delete expense.';
+			});
+		}
 	}
 }]);
 

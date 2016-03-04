@@ -16,6 +16,7 @@
 	$app->get('/event/view/private/:slug', 'Event:getPrivate');
 	$app->get('/event/view/public/:slug', 'Event:getPublic');
 	$app->post('/expense/add/:slug', 'Expense:add');
+	$app->delete('/expense/delete/:slug/:exid', 'Expense:delete');
 
 	$app->run();
 ?>
