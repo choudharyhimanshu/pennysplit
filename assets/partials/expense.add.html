@@ -13,7 +13,7 @@
 	    		</div>
 	    		<div class="col-md-8">
 	    			<div class="input-group">
-	  	      			<input type="number" step="0.1" min="0" max="10000000" class="form-control" name="expenseFormPaidAmount" id="expenseFormPaidAmount" ng-model="payer.amount" placeholder="Amount" required>
+	  	      			<input type="number" step="0.1" min="0" max="10000000" class="form-control" name="expenseFormPaidAmount" id="expenseFormPaidAmount" ng-model="payer.amount" placeholder="Amount" ng-init="payer.amount=0" required>
 						<span class="input-group-btn">
 							<button class="btn btn-default" type="button" ng-click="removePayer($index)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 						</span>
