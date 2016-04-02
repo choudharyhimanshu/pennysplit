@@ -41,6 +41,7 @@
 .howworks-jumbotron {
 	padding: 50px 0px 50px 0px;
 	border-top: 3px solid #2c3e50;
+	background-color: #ecf0f1;
 }
 
 .howworks-jumbotron h1 {
@@ -72,7 +73,7 @@
 
 .whyus-jumbotron {
 	padding: 20px 0px 20px 0px;
-	background-color: #ecf0f1;
+	background-color: #fff;
 	border-top: 3px solid #2c3e50;
 }
 /*.whyus-card h3 {
@@ -113,6 +114,7 @@
 .team-jumbotron {
 	padding: 50px 0px 50px 0px;
 	border-top: 3px solid #000;
+	background-color: #ecf0f1;
 }
 
 .team-jumbotron h1 {
@@ -138,7 +140,6 @@
 
 .credits-jumbotron {
 	padding: 20px 0px 20px 0px;
-	background-color: #ecf0f1;
 	border-top: 3px solid #2c3e50;
 }
 
