@@ -91,6 +91,7 @@ body {
 .azm-linkedin { background: #0177b5; }
 .azm-git { background: #f64d27; }
 
+
 .btn-addmore {
 	width: 40px;
 	height: 40px;
@@ -115,3 +116,4 @@ body {
 .inp-payer button:hover {
 	/*color: #3498db;*/
 }
+

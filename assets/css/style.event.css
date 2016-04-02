@@ -32,3 +32,19 @@
 .form-create-preview li button:hover {
 	color: #3498db;
 }
+
+.inp-buddies div {
+	margin-top: 5px;
+}
+
+.inp-payer {
+	margin-top: 10px;
+}
+
+.inp-payer p,.inp-payer input,.inp-payer .btn {
+	/*margin-top: 10px;*/
+}
+
+.panel-overview {
+	border-left: 1px solid #ecf0f1;
+}

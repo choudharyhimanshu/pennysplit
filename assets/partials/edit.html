@@ -1,93 +1,35 @@
 <div class="row">
 	<div class="container">
-		<div class="row-fluid">
-			<h1>{{event_data.title}}</h1>
-		</div>
+		<h1>{{event_data.title}}</h1>
 		<hr>
-		<div class="row">
-			<div class="col-md-8">
-				<h2>Add expenses</h2>
-				<div class="row">
-					<form class="col-md-8" name="expenseForm">
-					  	<div class="form-group">
-					    	<label for="expenseFormName">Expense Name</label>
-					    	<input type="text" class="form-control" name="expenseFormName" id="expenseFormName" ng-model="form_expense.name" placeholder="" required>
-					  	</div>
-					  	<div class="form-group">
-					    	<label for="expenseFormPaidBy">Paid by</label>
-					    	<div class="checkbox">
-					    	    <label>
-					    	      	<input type="checkbox" value="{{member.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-model="flag_mul_payer">Multiple People
-					    	    </label>
-					    	</div>
-					    	<div class="row inp-payer" ng-repeat="payer in form_expense.payers">
-					    		<div class="col-md-6">
-					    			<select class="form-control" name="expenseFormPayer" id="expenseFormPayer" ng-model="payer.id" required>
-					    				<option value="">Name</option>
-					    				<option ng-repeat="member in event_data.members | orderBy:'name'" value="{{member.id}}">{{member.name}}</option>
-					    			</select>
-					    		</div>
-					    		<div class="col-md-4">
-					    			<input type="text" class="form-control" name="expenseFormPaidAmount" id="expenseFormPaidAmount" ng-model="payer.amount" placeholder="Amount" required>
-					    		</div>
-					    		<div class="col-md-2">
-					    			<button type="button" class="btn btn-primary btn-block" ng-click="removePayer($index)" ng-if="$index != 0"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-					    		</div>
-					    	</div>
-					    	<div class="row text-center" ng-show="flag_mul_payer">
-					    		<button type="button" class="btn-addmore" ng-click="addPayer()">
-					    			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					    		</button>
-					    	</div>
-					  	</div>
-					  	<div class="form-group">
-					  		<label for="expenseFormPayee">Shared Between</label>
-					  		<div class="checkbox">
-					  		    <label>
-					  		      	<input type="checkbox" value="{{member.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-init="flag_share_all = true" ng-model="flag_share_all">All
-					  		    </label>
-					  		</div>
-					  		<div class="checkbox" ng-show="!flag_share_all" ng-repeat="member in event_data.members | orderBy:'name'">
-					  		    <label>
-					  		      	<input type="checkbox" value="{{member.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-init="form_expense.payees[member.id] = true" ng-model="form_expense.payees[member.id]">{{member.name}}
-					  		    </label>
-					  		</div>
-					  	</div>
-					  	<div class="form-group">
-					  		<div class="row">
-					  			<div class="col-md-3">
-								  	<button type="submit" class="btn btn-default btn-block" ng-click="submitExpense()">Submit</button>
-					  			</div>
-					  		</div>
-						</div>
-					</form>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<h3 class="text-center">Overview</h3>
-				<div class="row-fluid">
-					<div class="row-fluid">
-						<h4>Created by</h4>
-						<p>{{event_data.owner}}</p>
-						<hr>
-						<div>
-							Link : <a ui-sref="edit({slug : event_data.slug})">{{event_data.edit_url}}</a>
-							<br>
-							Non-editable Link : <a ui-sref="view({slug : event_data.view_slug})">{{event_data.view_url}}</a>
-						</div>
-						<hr>
-						<h4>Buddies</h4>
-						<ul>
-							<li ng-repeat="member in event_data.members | orderBy: 'name'">{{member.name}}</li>
-						</ul>
-						<hr>
-						<h4>Expenses</h4>
-						<ul>
-							<li ng-repeat="member in event_data.members | orderBy: 'name'">{{member.name}}</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>		
 	</div>
+</div>
+<div class="row">
+	<div class="container">
+		<div class="col-md-8" ui-view></div>
+		<div class="col-md-4 panel-overview">
+			<div class="row-fluid">
+				<div class="pull-right"><span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="edit.event_edit" ui-sref-opts="{slug:event_data.slug}"></span></div>
+				<h3 class="">Event</h3>
+				<p>Created by {{event_data.owner}} on {{event_data.created_on | date:'longDate'}}</p>
+				<h4>Buddies</h4>
+				<ul>
+					<li ng-repeat="member in event_data.members | orderBy: 'name'">{{member.name}}</li>
+				</ul>
+			</div>
+			<hr>
+			<div class="row-fluid">
+				<h4>Expenses</h4>
+				<ul>
+					<li ng-repeat="expense in event_data.expenses | orderBy: 'name'">
+						{{expense.name}}
+						<div class="pull-right">
+							<span><a href="">Edit</a></span>
+							<span><a href="" ng-click="removeExpense(expense.id)">Delete</a></span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>	
 </div>
