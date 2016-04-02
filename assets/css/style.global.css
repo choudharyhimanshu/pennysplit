@@ -44,6 +44,7 @@ body {
 .footer {
 	padding: 20px 0px 50px 0px;
 	border-top: 3px solid #000;
+	background-color: #ecf0f1;
 }
 
 .footer .info {
@@ -56,7 +57,7 @@ body {
 }
 
 .footer .contact .section {
-	padding: 10px 0px 0px 0px; 
+	padding: 3px 0px 0px 0px; 
 }
 
 .azm-size-32 {
@@ -89,3 +90,28 @@ body {
 .azm-twitter { background: #55acee; }
 .azm-linkedin { background: #0177b5; }
 .azm-git { background: #f64d27; }
+
+.btn-addmore {
+	width: 40px;
+	height: 40px;
+	border: none;
+	border-radius: 20px;
+	margin: 10px;
+	color: #fff;
+	background-color: #16a085; 
+	text-align: center;
+}
+
+.inp-payer select, .inp-payer  input, .inp-payer  button {
+	margin-top: 10px;
+}
+
+.inp-payer button {
+	/*margin: 5px;*/
+	/*background: none;*/
+	/*border: none;*/
+}
+
+.inp-payer button:hover {
+	/*color: #3498db;*/
+}
