@@ -27,7 +27,8 @@ pennysplit.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('edit.home', {
         url: '/',
-        templateUrl: "/assets/partials/event.home.html"
+        templateUrl: "/assets/partials/event.home.html",
+        controller: "EventHomeCtrl"
     })
     .state('edit.event_edit', {
         url: '/event/edit',

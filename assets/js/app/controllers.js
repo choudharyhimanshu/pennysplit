@@ -245,3 +245,148 @@ pennysplit.controller('EditEventCtrl', ['$scope','$state','EventSrv', function($
 		}
 	});	
 }]);
+
+pennysplit.controller('EventHomeCtrl', ['$scope', function($scope){
+	var addPayment = function(id,amount){
+		for (var i = $scope.event_balances.length - 1; i >= 0; i--) {
+			if($scope.event_balances[i].id == id){
+				$scope.event_balances[i].balance += amount;
+			}
+		}
+	}
+
+	$scope.$watch('event_data',function(val){
+		if(val){
+			$scope.event_balances = [];
+
+			var temp_balance_baskets = {
+				'positive' : [],
+				'negative' : [],
+				'clear' : []
+			};
+			var master_balance_baskets = {
+				'positive' : [],
+				'negative' : [],
+				'clear' : []
+			};
+			var temp_settlements = [];
+
+			for (var i = 0; i < $scope.event_data.members_count; i++) {
+				$scope.event_balances.push({
+					"id" : $scope.event_data.members[i].id,
+					"name" : $scope.event_data.members[i].name,
+					"balance" : 0
+				});
+			}
+			for (var i = 0; i < $scope.event_data.expenses_count; i++) {
+				var tot_amount = parseFloat($scope.event_data.expenses[i].tot_amount);
+				var num_sharers =  $scope.event_data.expenses[i].payees.length;
+
+				for (var j = 0; j < $scope.event_data.expenses[i].payers.length; j++) {
+					addPayment($scope.event_data.expenses[i].payers[j].id, Math.round(parseFloat($scope.event_data.expenses[i].payers[j].amount)*100)/100);
+				}
+
+				for (var j = 0; j < $scope.event_data.expenses[i].payees.length; j++) {
+					addPayment($scope.event_data.expenses[i].payees[j].id,-1*(Math.round((tot_amount/num_sharers)*100)/100));
+				}
+			}
+
+			for (var i = 0; i < $scope.event_balances.length; i++) {
+				if ($scope.event_balances[i].balance == 0) {
+					temp_balance_baskets.clear.push({
+						'id' : $scope.event_balances[i].id,
+						'name' : $scope.event_balances[i].name,
+						'amount' : $scope.event_balances[i].balance
+					});
+					master_balance_baskets.clear.push({
+						'id' : $scope.event_balances[i].id,
+						'name' : $scope.event_balances[i].name,
+						'amount' : $scope.event_balances[i].balance
+					});
+				}
+				else if($scope.event_balances[i].balance < 0){
+					temp_balance_baskets.negative.push({
+						'id' : $scope.event_balances[i].id,
+						'name' : $scope.event_balances[i].name,
+						'amount' : $scope.event_balances[i].balance
+					});
+					master_balance_baskets.negative.push({
+						'id' : $scope.event_balances[i].id,
+						'name' : $scope.event_balances[i].name,
+						'amount' : $scope.event_balances[i].balance
+					});
+				}
+				else if($scope.event_balances[i].balance > 0) {
+					temp_balance_baskets.positive.push({
+						'id' : $scope.event_balances[i].id,
+						'name' : $scope.event_balances[i].name,
+						'amount' : $scope.event_balances[i].balance
+					});
+					master_balance_baskets.positive.push({
+						'id' : $scope.event_balances[i].id,
+						'name' : $scope.event_balances[i].name,
+						'amount' : $scope.event_balances[i].balance
+					});
+				}
+			}
+
+			var curr=0;
+			var limit=temp_balance_baskets.positive.length;
+
+			for (var i = 0; i < temp_balance_baskets.negative.length; i++) {
+				if (curr >= limit) {
+					break;
+				}
+
+				if(Math.abs(temp_balance_baskets.negative[i].amount) == temp_balance_baskets.positive[curr].amount){
+					temp_settlements.push({
+						'from' : {
+							'id' : temp_balance_baskets.negative[i].id,
+							'name' : temp_balance_baskets.negative[i].name
+						},
+						'to' : {
+							'id' : temp_balance_baskets.positive[curr].id,
+							'name' : temp_balance_baskets.positive[curr].name
+						},
+						'amount' : Math.abs(temp_balance_baskets.negative[i].amount)
+					});
+					temp_balance_baskets.positive[curr].amount = 0;
+					curr++;
+				}
+				else if(Math.abs(temp_balance_baskets.negative[i].amount) < temp_balance_baskets.positive[curr].amount){
+					temp_settlements.push({
+						'from' : {
+							'id' : temp_balance_baskets.negative[i].id,
+							'name' : temp_balance_baskets.negative[i].name
+						},
+						'to' : {
+							'id' : temp_balance_baskets.positive[curr].id,
+							'name' : temp_balance_baskets.positive[curr].name
+						},
+						'amount' : Math.abs(temp_balance_baskets.negative[i].amount)
+					});
+					temp_balance_baskets.positive[curr].amount += temp_balance_baskets.negative[i].amount;
+				}
+				else if(Math.abs(temp_balance_baskets.negative[i].amount) > temp_balance_baskets.positive[curr].amount){
+					temp_settlements.push({
+						'from' : {
+							'id' : temp_balance_baskets.negative[i].id,
+							'name' : temp_balance_baskets.negative[i].name
+						},
+						'to' : {
+							'id' : temp_balance_baskets.positive[curr].id,
+							'name' : temp_balance_baskets.positive[curr].name
+						},
+						'amount' : temp_balance_baskets.positive[curr].amount
+					});
+					temp_balance_baskets.negative[i].amount += temp_balance_baskets.positive[curr].amount;
+					temp_balance_baskets.positive[curr].amount = 0;
+					curr++;
+					i--;
+				}
+			}
+			$scope.settlements = temp_settlements;
+			$scope.balance_baskets = master_balance_baskets;
+		}
+	});
+}]);

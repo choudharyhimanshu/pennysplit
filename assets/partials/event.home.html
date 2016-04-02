@@ -1,2 +1,26 @@
-<h1>Event Home</h1>
-Hello World!
+<div class="row">
+	<div class="col-md-4">
+		<h3>Positive</h3>
+		<p ng-repeat="user in balance_baskets.positive">
+			{{user.name}} : {{user.amount}}
+		</p>
+	</div>
+	<div class="col-md-4">
+		<h3>Negative</h3>
+		<p ng-repeat="user in balance_baskets.negative">
+			{{user.name}} : {{user.amount}}
+		</p>
+	</div>
+	<div class="col-md-4">
+		<h3>Already Settled</h3>
+		<p ng-repeat="user in balance_baskets.clear">
+			{{user.name}} : {{user.amount}}
+		</p>
+	</div>
+</div>
+
+<div>
+	<p ng-repeat="settlement in settlements">
+		{{settlement.from.name}} owes {{settlement.amount}} to {{settlement.to.name}}
+	</p>
+</div>
