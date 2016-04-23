@@ -27,16 +27,16 @@ pennysplit.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('edit.home', {
         url: '/',
-        templateUrl: "/assets/partials/event.home.html",
-        controller: "EventHomeCtrl"
+        templateUrl: "/assets/partials/edit.html",
+        controller: "EditCtrl"
     })
-    .state('edit.event_edit', {
-        url: '/event/edit',
+    .state('event_edit', {
+        url: '/edit/:slug/event/edit',
         templateUrl: "/assets/partials/event.edit.html",
         controller: "EditEventCtrl"
     })
-    .state('edit.expense_add', {
-        url: '/expense/add',
+    .state('expense_add', {
+        url: '/edit/:slug/expense/add',
         templateUrl: "/assets/partials/expense.add.html",
         controller: "AddExpenseCtrl"
     })
