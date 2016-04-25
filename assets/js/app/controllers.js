@@ -5,40 +5,29 @@ pennysplit.controller('WelcomeCtrl', ['$scope','$rootScope', function($scope,$ro
 
 pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($scope,$state,EventSrv){
 
-	var count_members = 1;
-
 	$scope.is_loading = false;
 	$scope.create = {
 		title : '',
 		currency : 'INR',
 		owner : '',
 		members : [
-			{id : count_members++,name : ''},
-			{id : count_members++,name : ''},
-			{id : count_members++,name : ''},
-			{id : count_members++,name : ''}
+			{id : 0,name : ''},
+			{id : 0,name : ''},
+			{id : 0,name : ''}
 		]
 	};
 
 	$scope.addMember = function(){
 		if($scope.create.members.length < 50){
 			$scope.create.members.push({
-				id : count_members++,
+				id : 0,
 				name : ''
 			});
 		}
 	};
 
 	$scope.removeMember = function(member_id){
-		var index = null;
-		for(var i = 0; i < $scope.create.members.length; i++){
-			if($scope.create.members[i].id == member_id){
-				index = i;
-			}
-		}
-		if(index != null){
-			$scope.create.members.splice(index,1);
-		}
+		$scope.create.members.splice(member_id,1);
 	}
 
 	$scope.submit = function(){
@@ -46,7 +35,7 @@ pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($sco
 			$scope.message = 'Loading..';
 			$scope.is_loading = true;
 			$scope.create.members.push({
-				id : count_members++,
+				id : $scope.create.members.length,
 				name : $scope.create.owner
 			});
 			EventSrv.createEvent($scope.create).success(function(response){
