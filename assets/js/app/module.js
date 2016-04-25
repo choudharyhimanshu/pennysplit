@@ -61,6 +61,8 @@ pennysplit.run(['$rootScope', function($rootScope){
     });
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
         // console.log(fromState,toState);
+        $rootScope.stateFrom = fromState;
+        $rootScope.stateFromParams = fromParams;
     });
 }]);
 

@@ -6,11 +6,11 @@
 </div>
 <div class="row">
 	<div class="container">
-		<div class="col-md-8">
+		<div class="col-md-6 col-sm-12">
 			<h2>Edit Event</h2>
 			<br>
 			<div class="row">
-				<form name="createForm" class="col-md-8 form-horizontal">
+				<form name="createForm" class="form-horizontal">
 				  	<div class="form-group" ng-class="{'has-error' : (createForm.$submitted || createForm.title.$touched) && createForm.title.$error.required}">
 				  	    <label for="createFormTitle" class="col-sm-3 control-label">Event Name*</label>
 				  	    <div class="col-sm-9">
@@ -37,9 +37,10 @@
 				  	    <div class="col-sm-9 inp-buddies">
 					      		<div class="row-fluid" ng-repeat="buddy in create.members">
 					      			<div class="input-group">
+			  	      				<input type="hidden" ng-init="buddy.id=$index;"/>
 				  	      			<input type="text" class="form-control" placeholder="Who were you with?" id="createFormBuddy" name="buddy{{$index}}" ng-model="buddy.name" maxlength="60" required>
 									<span class="input-group-btn">
-										<button class="btn btn-default" type="button" ng-click="removeMember(buddy.id)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+										<button class="btn btn-default" type="button" ng-click="removeMember($index)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 									</span>
 				      			    </div>
 					      		</div>
@@ -54,33 +55,30 @@
 				  	</div>
 				  	<div class="form-group">
 				  		<div class="col-md-9 col-md-offset-3 col-sm-12 col-xs-12">
-						  	<input type="submit" ng-click="submitEditEvent()" class="btn btn-primary btn-lg btn-block" ng-class="{'disabled' : is_loading}" value="Update Event" style="background-color: #34495e;" />
+				  			<div class="row">
+		  				  		<div class="col-md-6 col-sm-12 col-xs-12">
+		  						  	<input type="submit" ng-click="submitEditEvent()" class="btn btn-primary btn-lg btn-block" ng-class="{'disabled' : is_loading}" value="Update Event" style="background-color: #34495e;" />
+		  				  		</div>
+		  				  		<div class="col-md-6 col-sm-12 col-xs-12">
+		  						  	<input type="submit" ng-click="cancelEditEvent()" class="btn btn-danger btn-lg btn-block" ng-class="{'disabled' : is_loading}" value="Cancel" />
+		  				  		</div>
+				  			</div>		  			  		
 				  		</div>
 				  	</div>
 				</form>
 			</div>
 		</div>
-		<div class="col-md-4 panel-overview">
-			<div class="row-fluid">
-				<div class="pull-right"><span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="edit.event_edit" ui-sref-opts="{slug:event_data.slug}"></span></div>
-				<h3 class="">Event</h3>
-				<p>Created by {{event_data.owner}} on {{event_data.created_on | date:'longDate'}}</p>
-				<h4>Buddies</h4>
+		<div class="col-md-5 col-md-offset-1 col-sm-12 form-create-preview">
+			<div class="row-fluid" ng-show="create.owner">
+				<h3>Created By:</h3>
 				<ul>
-					<li ng-repeat="member in event_data.members | orderBy: 'name'">{{member.name}}</li>
+					<li>{{create.owner}}</li>
 				</ul>
 			</div>
-			<hr>
 			<div class="row-fluid">
-				<h4>Expenses</h4>
+				<h3>Buddies</h3>
 				<ul>
-					<li ng-repeat="expense in event_data.expenses | orderBy: 'name'">
-						{{expense.name}}
-						<div class="pull-right">
-							<span><a href="">Edit</a></span>
-							<span><a href="" ng-click="removeExpense(expense.id)">Delete</a></span>
-						</div>
-					</li>
+					<li ng-repeat="member in create.members" ng-if="member.name">{{member.name}}</li>
 				</ul>
 			</div>
 		</div>
