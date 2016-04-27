@@ -302,15 +302,16 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 			return flag;
 		}
 
-		var getNameFromId = function(arr, id){
-			for (var i = arr.length - 1; i >= 0; i--) {
-				if (arr[i].id == id){
-					return arr[i].name;
-				}
-			}
-		}
-
 		$scope.form_expense = {
+			name : '',
+			payers : [{
+				id : null,
+				amount : 0
+			}],
+			payees : []
+		};
+
+		var form_expense_master = {
 			name : '',
 			payers : [],
 			payees : []
@@ -319,31 +320,52 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			$scope.event_data = response.data;
 
-			for (var i = 0; i < $scope.event_data.members.length; i++) {
-
-				$scope.form_expense.payers.push({
-					id : $scope.event_data.members[i].id,
-					name : $scope.event_data.members[i].name,
-					amount : ''
-				});
-
+			for (var i = 0; i < response.data.members.length; i++) {
 				$scope.form_expense.payees.push({
-					id : $scope.event_data.members[i].id,
-					name : $scope.event_data.members[i].name,
+					id : response.data.members[i].id,
+					name : response.data.members[i].name,
 					flag : true
+				});
+				form_expense_master.payers.push({
+					id : response.data.members[i].id,
+					name : response.data.members[i].name,
+					amount : 0
 				});
 			}
 		}).error(function(response){
 			console.log(response);
 		});
 
+		$scope.$watch('flag_multiple_payers',function(val){
+			$scope.form_expense.payers.splice(1);
+			if(val){
+				$scope.form_expense.payers.push({
+					id : null,
+					amount : 0
+				});
+				$scope.form_expense.payers.push({
+					id : null,
+					amount : 0
+				});
+			}
+		});
+
+		$scope.$watch('flag_share_all',function(val){
+			if(val){
+				for (var i=0; i < $scope.form_expense.payees.length; i++){
+					$scope.form_expense.payees[i].flag = true;
+				}
+			}
+		});		
+
 		$scope.addPayer = function(){
 			$scope.flag_min_payers = false;
 			$scope.form_expense.payers.push({
-				id : '',
-				amount : ''
+				id : null,
+				amount : 0
 			});
 		}
+
 		$scope.removePayer = function(index){
 			if($scope.form_expense.payers.length > 1){
 				$scope.form_expense.payers.splice(index,1);
@@ -352,18 +374,23 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 				$scope.flag_min_payers = true;
 			}
 		}
+
 		$scope.submitExpense = function(){
 			if($scope.expenseForm.$valid && checkForTrue($scope.form_expense.payees)){
-				var form_expense_master = {
-					name : $scope.form_expense.name,
-					payers : $scope.form_expense.payers,
-					payees : []
-				};
-				for (var i = $scope.form_expense.payees.length - 1; i >= 0; i--) {
+				for (var i = 0; i < form_expense_master.payers.length; i++) {
+					form_expense_master.payers[i].amount = 0;
+				}
+				form_expense_master.payees.splice(0);
+				form_expense_master.name = $scope.form_expense.name;
+				for (var i = 0; i < $scope.form_expense.payers.length; i++) {
+					form_expense_master.payers[$scope.form_expense.payers[i].id].amount += $scope.form_expense.payers[i].amount;
+				}
+				for (var i = 0; i < $scope.form_expense.payees.length; i++) {
 					if($scope.form_expense.payees[i].flag == true){
 						form_expense_master.payees.push($scope.form_expense.payees[i]);
 					}
 				}
+
 				EventSrv.addExpense($scope.event_data.slug,form_expense_master).success(function(response){
 					if(response.success == true){
 						$state.go('expense_add',{slug:$scope.event_data.slug},{reload:true});

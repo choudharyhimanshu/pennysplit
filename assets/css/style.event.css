@@ -37,12 +37,19 @@
 	margin-top: 5px;
 }
 
-.inp-payer {
-	margin-top: 10px;
+
+.inp-payer select, .inp-payer  input, .inp-payer  button {
+	margin-top: 5px;
 }
 
-.inp-payer p,.inp-payer input,.inp-payer .btn {
-	/*margin-top: 10px;*/
+.inp-payer button {
+	/*margin: 5px;*/
+	/*background: none;*/
+	/*border: none;*/
+}
+
+.inp-payer button:hover {
+	/*color: #3498db;*/
 }
 
 .panel-overview {

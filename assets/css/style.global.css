@@ -101,17 +101,3 @@ body {
 	background-color: #16a085; 
 	text-align: center;
 }
-
-.inp-payer select, .inp-payer  input, .inp-payer  button {
-	margin-top: 10px;
-}
-
-.inp-payer button {
-	/*margin: 5px;*/
-	/*background: none;*/
-	/*border: none;*/
-}
-
-.inp-payer button:hover {
-	/*color: #3498db;*/
-}
