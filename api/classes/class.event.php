@@ -93,7 +93,7 @@ class Event {
 	    if($slug != '' && $title != '' && $owner != '' && sizeof($members)>0){
 	    	$time = time();
 
-	    	$res = $db->conn->query("UPDATE event SET title='$title',currency= '$currency',created_by='$owner' WHERE slug='$slug'");
+	    	$res = $db->conn->query("UPDATE event SET title='$title',currency= '$currency',created_by='$owner' WHERE slug='$slug' COLLATE latin1_general_cs");
 	    	if($res){
 	    		$fkeid = Security::getIdFromSlug($slug);
 
@@ -154,7 +154,7 @@ class Event {
 	    	'data' => NULL
 	    );
 
-	    $res = $db->conn->query("SELECT eid,slug,view_slug,title,currency,created_on,created_by FROM event WHERE slug = '$slug'");
+	    $res = $db->conn->query("SELECT eid,slug,view_slug,title,currency,created_on,created_by FROM event WHERE slug = '$slug' COLLATE latin1_general_cs");
 
 	    if ($res) {
 	    	if($res->num_rows == 1){
