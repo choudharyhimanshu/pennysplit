@@ -11,6 +11,7 @@
 
 .form-create-preview {
 	border-left: 1px solid #ecf0f1;
+	padding-bottom: 20px;
 }
 
 .form-create-preview ul {
@@ -27,10 +28,6 @@
 .form-create-preview li button {
 	background: none;
 	border: none;
-}
-
-.form-create-preview li button:hover {
-	color: #3498db;
 }
 
 .inp-buddies div {
@@ -53,5 +50,43 @@
 }
 
 .panel-overview {
+	padding-bottom: 20px;
 	border-left: 1px solid #ecf0f1;
+}
+
+.panel-overview ul {
+	padding: 0px;
+}
+
+.panel-overview li {
+	color: #34495e;
+	padding: 0px;
+	border-bottom: 2px solid #ecf0f1;
+	font-size: 12pt;
+	list-style-type: none;
+}
+
+.panel-overview li a {
+	margin: 0 5px 0 5px;
+	color: #7f8c8d;
+}
+
+.panel-overview li a:hover {
+	color: #34495e;
+}
+
+.panel-overview .title {
+	font-size: 1.2em;
+}
+
+.panel-overview .title h4{
+	margin: 5px 0px 5px 0px;
+}
+
+.panel-overview .title .glyphicon {
+	font-size: .8em;
+}
+
+.panel-overview .description {
+	font-size: .8em;
 }
