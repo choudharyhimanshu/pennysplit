@@ -15,6 +15,11 @@
 				    	<input type="text" class="form-control" name="expenseFormName" id="expenseFormName" ng-model="form_expense.name" placeholder="" required>
 				  	</div>
 				  	<div class="form-group">
+				    	<label for="expenseFormName">You are</label>
+				    	<select class="form-control" ng-model="form_expense.added_by" ng-options="buddy.id as buddy.name for buddy in event_data.members" required>
+				    	</select>
+				  	</div>
+				  	<div class="form-group">
 				    	<label for="expenseFormPaidBy">Paid by</label>
 	    		    	<div class="row-fluid">
     		    			<div class="checkbox">

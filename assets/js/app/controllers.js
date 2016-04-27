@@ -304,6 +304,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 
 		$scope.form_expense = {
 			name : '',
+			added_by : null,
 			payers : [{
 				id : null,
 				amount : 0
@@ -313,6 +314,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 
 		var form_expense_master = {
 			name : '',
+			added_by : null,
 			payers : [],
 			payees : []
 		};
@@ -382,6 +384,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 				}
 				form_expense_master.payees.splice(0);
 				form_expense_master.name = $scope.form_expense.name;
+				form_expense_master.added_by = $scope.form_expense.added_by;
 				for (var i = 0; i < $scope.form_expense.payers.length; i++) {
 					form_expense_master.payers[$scope.form_expense.payers[i].id].amount += $scope.form_expense.payers[i].amount;
 				}

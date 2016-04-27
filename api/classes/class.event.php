@@ -219,7 +219,7 @@ class Event {
 		$expenses = [];
 
 
-		$res = $db->conn->query("SELECT expenses.exid, expenses.name, expenses.created_on, expenses.tot_amount, payers.mid as `payer_id`, payers.name as `payer_name`, payers.amount as `payer_amount` FROM expenses LEFT JOIN payers ON payers.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
+		$res = $db->conn->query("SELECT expenses.exid, expenses.name, expenses.fk_added_by, expenses.created_on, expenses.tot_amount, payers.mid as `payer_id`, payers.name as `payer_name`, payers.amount as `payer_amount` FROM expenses LEFT JOIN payers ON payers.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
 
 		if($res){
 			if($res->num_rows > 0){
@@ -231,6 +231,7 @@ class Event {
 				$expenses[] = array(
 					'id' => $row['exid'],
 					'name' => $row['name'],
+					'added_by' => $row['fk_added_by'],
 					'created_on' => $row['created_on'],
 					'tot_amount' => $row['tot_amount'],
 					'payers' => [],
@@ -249,6 +250,7 @@ class Event {
 						$expenses[] = array(
 							'id' => $row['exid'],
 							'name' => $row['name'],
+							'added_by' => $row['fk_added_by'],
 							'created_on' => $row['created_on'],
 							'tot_amount' => $row['tot_amount'],
 							'payers' => [],
