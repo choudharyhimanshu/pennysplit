@@ -5,40 +5,29 @@ pennysplit.controller('WelcomeCtrl', ['$scope','$rootScope', function($scope,$ro
 
 pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($scope,$state,EventSrv){
 
-	var count_members = 1;
-
 	$scope.is_loading = false;
 	$scope.create = {
 		title : '',
 		currency : 'INR',
 		owner : '',
 		members : [
-			{id : count_members++,name : ''},
-			{id : count_members++,name : ''},
-			{id : count_members++,name : ''},
-			{id : count_members++,name : ''}
+			{id : null,name : ''},
+			{id : null,name : ''},
+			{id : null,name : ''}
 		]
 	};
 
 	$scope.addMember = function(){
 		if($scope.create.members.length < 50){
 			$scope.create.members.push({
-				id : count_members++,
+				id : null,
 				name : ''
 			});
 		}
 	};
 
 	$scope.removeMember = function(member_id){
-		var index = null;
-		for(var i = 0; i < $scope.create.members.length; i++){
-			if($scope.create.members[i].id == member_id){
-				index = i;
-			}
-		}
-		if(index != null){
-			$scope.create.members.splice(index,1);
-		}
+		$scope.create.members.splice(member_id,1);
 	}
 
 	$scope.submit = function(){
@@ -46,12 +35,15 @@ pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($sco
 			$scope.message = 'Loading..';
 			$scope.is_loading = true;
 			$scope.create.members.push({
-				id : count_members++,
+				id : $scope.create.members.length,
 				name : $scope.create.owner
 			});
+			for(var i=0; i<$scope.create.members.length;i++){
+				$scope.create.members[i].id=i;
+			}
 			EventSrv.createEvent($scope.create).success(function(response){
 				if(response.success == true){
-					$state.go('edit.expense_add',{slug:response.data.slug});
+					$state.go('expense_add',{slug:response.data.slug});
 				}
 				$scope.is_loading = false;
 				$scope.message = response.message;
@@ -60,142 +52,13 @@ pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($sco
 				$scope.message = 'Some error occured. Please try again later.';
 			});
 		}
-	};	
+	};
 }]);
 
-pennysplit.controller('ViewCtrl', ['$rootScope','$stateParams', function($rootScope,$stateParams){
-	$rootScope.slug = $stateParams.slug;
-}]);
-
-pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv', function($scope,$state,$stateParams,EventSrv){
+pennysplit.controller('EditEventCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv', function($scope,$rootScope,$state,$stateParams,EventSrv){
 	if($stateParams.slug){
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			$scope.event_data = response.data;
-		}).error(function(response){
-			console.log(response);
-		});
-	}
-	else {
-		$scope.message = 'Invalid URL.';
-	}
-
-	$scope.removeExpense = function(exid){
-		if (exid !== undefined) {
-			EventSrv.deleteExpense($stateParams.slug,exid).success(function(response){
-				if (response.success == true) {
-					$state.go($state.current, {}, {reload: true});
-				}
-				$scope.message = response.message;
-			}).error(function(response){
-				$scope.message = 'Could not delete expense.';
-			});
-		}
-	}
-}]);
-
-
-pennysplit.controller('AddExpenseCtrl', ['$scope','$state','EventSrv', function($scope,$state,EventSrv){
-	var checkForTrue = function(arr){
-		var flag = false;
-		for (var i = arr.length - 1; i >= 0; i--) {
-			if (arr[i].flag == true){
-				flag = true;
-				break;
-			}
-		}
-		return flag;
-	}
-
-	var getNameFromId = function(arr, id){
-		for (var i = arr.length - 1; i >= 0; i--) {
-			if (arr[i].id == id){
-				return arr[i].name;
-			}
-		}
-	}
-
-	$scope.form_expense = {
-		name : '',
-		payers : [],
-		payees : []
-	};
-
-	$scope.$watch('event_data',function(val){
-		if(val){
-			for (var i = 0; i < $scope.event_data.members.length; i++) {
-
-				$scope.form_expense.payers.push({
-					id : $scope.event_data.members[i].id,
-					name : $scope.event_data.members[i].name,
-					amount : ''
-				});
-
-				$scope.form_expense.payees.push({
-					id : $scope.event_data.members[i].id,
-					name : $scope.event_data.members[i].name,
-					flag : true
-				});
-			}
-		}
-	})
-	
-	$scope.addPayer = function(){
-		$scope.flag_min_payers = false;
-		$scope.form_expense.payers.push({
-			id : '',
-			amount : ''
-		});
-	}
-	$scope.removePayer = function(index){
-		if($scope.form_expense.payers.length > 1){
-			$scope.form_expense.payers.splice(index,1);
-		}
-		else {
-			$scope.flag_min_payers = true;
-		}
-	}
-	$scope.submitExpense = function(){
-		if($scope.expenseForm.$valid && checkForTrue($scope.form_expense.payees)){
-			var form_expense_master = {
-				name : $scope.form_expense.name,
-				payers : $scope.form_expense.payers,
-				payees : []
-			};
-			for (var i = $scope.form_expense.payees.length - 1; i >= 0; i--) {
-				if($scope.form_expense.payees[i].flag == true){
-					form_expense_master.payees.push($scope.form_expense.payees[i]);
-				}
-			}
-			EventSrv.addExpense($scope.event_data.slug,form_expense_master).success(function(response){
-				if(response.success == true){
-					$state.go('edit.expense_add',{slug:$scope.event_data.slug},{reload:true});
-				}
-				$scope.message = response.message;	
-			}).error(function(response){
-				$scope.message = 'Some error occured.';
-			});
-		}
-		else {
-			$scope.message = 'Invalid inputs.';
-		}
-	}
-}]);
-
-pennysplit.controller('EditEventCtrl', ['$scope','$state','EventSrv', function($scope,$state,EventSrv){
-	
-	var maxId = function(arr){
-		var id = -1;
-		for (var i = arr.length - 1; i >= 0; i--) {
-			if(arr[i].id > id){
-				id = arr[i].id;
-			}
-		}
-		return parseInt(id);
-	}
-
-	$scope.$watch('event_data',function(val){
-		if(val){
-			var count_members = maxId($scope.event_data.members) + 1; // To be FIXED!!
 
 			$scope.is_loading = false;
 			$scope.create = {
@@ -208,31 +71,26 @@ pennysplit.controller('EditEventCtrl', ['$scope','$state','EventSrv', function($
 			$scope.addMember = function(){
 				if($scope.create.members.length < 50){
 					$scope.create.members.push({
-						id : count_members++,
+						id : null,
 						name : ''
 					});
 				}
 			};
 
 			$scope.removeMember = function(member_id){
-				var index = null;
-				for(var i = 0; i < $scope.create.members.length; i++){
-					if($scope.create.members[i].id == member_id){
-						index = i;
-					}
-				}
-				if(index != null){
-					$scope.create.members.splice(index,1);
-				}
+				$scope.create.members.splice(member_id,1);
 			}
 
 			$scope.submitEditEvent = function(){
 				if($scope.createForm.$valid && $scope.create.members.length > 0){
 					$scope.message = 'Loading..';
 					$scope.is_loading = true;
+					for(var i=0; i<$scope.create.members.length;i++){
+						$scope.create.members[i].id=i;
+					}
 					EventSrv.updateEvent($scope.event_data.slug,$scope.create).success(function(response){
 						if(response.success == true){
-							$state.go('edit.expense_add',{slug:response.data.slug},{reload:true});
+							$state.go('expense_add',{slug:response.data.slug},{reload:true});
 						}
 						$scope.is_loading = false;
 						$scope.message = response.message;
@@ -242,21 +100,42 @@ pennysplit.controller('EditEventCtrl', ['$scope','$state','EventSrv', function($
 					});
 				}
 			};
-		}
-	});	
+
+			$scope.cancelEditEvent = function(){
+				if($rootScope.stateFrom.name != ""){
+					$state.go($rootScope.stateFrom,$rootScope.stateFromParams);
+				}
+				else {
+					$state.go("edit",{slug:$stateParams.slug});
+				}
+			}
+
+		}).error(function(response){
+			console.log(response);
+		});
+	}
+	else {
+		$scope.message = 'Invalid URL.';
+	}
 }]);
 
-pennysplit.controller('EventHomeCtrl', ['$scope', function($scope){
-	var addPayment = function(id,amount){
-		for (var i = $scope.event_balances.length - 1; i >= 0; i--) {
-			if($scope.event_balances[i].id == id){
-				$scope.event_balances[i].balance += amount;
+pennysplit.controller('ViewCtrl', ['$rootScope','$stateParams', function($rootScope,$stateParams){
+	$rootScope.slug = $stateParams.slug;
+}]);
+
+pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv', function($scope,$state,$stateParams,EventSrv){
+	if($stateParams.slug){
+		var addPayment = function(id,amount){
+			for (var i = $scope.event_balances.length - 1; i >= 0; i--) {
+				if($scope.event_balances[i].id == id){
+					$scope.event_balances[i].balance += amount;
+				}
 			}
 		}
-	}
 
-	$scope.$watch('event_data',function(val){
-		if(val){
+		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
+			$scope.event_data = response.data;
+
 			$scope.event_balances = [];
 
 			var temp_balance_baskets = {
@@ -387,6 +266,163 @@ pennysplit.controller('EventHomeCtrl', ['$scope', function($scope){
 			}
 			$scope.settlements = temp_settlements;
 			$scope.balance_baskets = master_balance_baskets;
+		}).error(function(response){
+			console.log(response);
+		});
+
+		$scope.removeExpense = function(exid){
+			if (exid !== undefined) {
+				EventSrv.deleteExpense($stateParams.slug,exid).success(function(response){
+					if (response.success == true) {
+						$state.go($state.current, {}, {reload: true});
+					}
+					$scope.message = response.message;
+				}).error(function(response){
+					$scope.message = 'Could not delete expense.';
+				});
+			}
 		}
-	});
+	}
+	else {
+		$scope.message = 'Invalid URL.';
+	}
 }]);
+
+
+pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','EventSrv', function($scope,$state,$stateParams,EventSrv){
+	if($stateParams.slug){
+		var checkForTrue = function(arr){
+			var flag = false;
+			for (var i = arr.length - 1; i >= 0; i--) {
+				if (arr[i].flag == true){
+					flag = true;
+					break;
+				}
+			}
+			return flag;
+		}
+
+		$scope.form_expense = {
+			name : '',
+			added_by : null,
+			payers : [{
+				id : null,
+				amount : 0
+			}],
+			payees : []
+		};
+
+		var form_expense_master = {
+			name : '',
+			added_by : null,
+			payers : [],
+			payees : []
+		};
+
+		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
+			$scope.event_data = response.data;
+
+			for (var i = 0; i < response.data.members.length; i++) {
+				$scope.form_expense.payees.push({
+					id : response.data.members[i].id,
+					name : response.data.members[i].name,
+					flag : true
+				});
+				form_expense_master.payers.push({
+					id : response.data.members[i].id,
+					name : response.data.members[i].name,
+					amount : 0
+				});
+			}
+		}).error(function(response){
+			console.log(response);
+		});
+
+		$scope.$watch('flag_multiple_payers',function(val){
+			$scope.form_expense.payers.splice(1);
+			if(val){
+				$scope.form_expense.payers.push({
+					id : null,
+					amount : 0
+				});
+				$scope.form_expense.payers.push({
+					id : null,
+					amount : 0
+				});
+			}
+		});
+
+		$scope.$watch('flag_share_all',function(val){
+			if(val){
+				for (var i=0; i < $scope.form_expense.payees.length; i++){
+					$scope.form_expense.payees[i].flag = true;
+				}
+			}
+		});		
+
+		$scope.addPayer = function(){
+			$scope.flag_min_payers = false;
+			$scope.form_expense.payers.push({
+				id : null,
+				amount : 0
+			});
+		}
+
+		$scope.removePayer = function(index){
+			if($scope.form_expense.payers.length > 1){
+				$scope.form_expense.payers.splice(index,1);
+			}
+			else {
+				$scope.flag_min_payers = true;
+			}
+		}
+
+		$scope.submitExpense = function(){
+			if($scope.expenseForm.$valid && checkForTrue($scope.form_expense.payees)){
+				for (var i = 0; i < form_expense_master.payers.length; i++) {
+					form_expense_master.payers[i].amount = 0;
+				}
+				form_expense_master.payees.splice(0);
+				form_expense_master.name = $scope.form_expense.name;
+				form_expense_master.added_by = $scope.form_expense.added_by;
+				for (var i = 0; i < $scope.form_expense.payers.length; i++) {
+					form_expense_master.payers[$scope.form_expense.payers[i].id].amount += $scope.form_expense.payers[i].amount;
+				}
+				for (var i = 0; i < $scope.form_expense.payees.length; i++) {
+					if($scope.form_expense.payees[i].flag == true){
+						form_expense_master.payees.push($scope.form_expense.payees[i]);
+					}
+				}
+
+				EventSrv.addExpense($scope.event_data.slug,form_expense_master).success(function(response){
+					if(response.success == true){
+						$state.go('expense_add',{slug:$scope.event_data.slug},{reload:true});
+					}
+					$scope.message = response.message;	
+				}).error(function(response){
+					$scope.message = 'Some error occured.';
+				});
+			}
+			else {
+				$scope.message = 'Invalid inputs.';
+			}
+		}
+
+		$scope.removeExpense = function(exid){
+			if (exid !== undefined) {
+				EventSrv.deleteExpense($stateParams.slug,exid).success(function(response){
+					if (response.success == true) {
+						$state.go($state.current, {}, {reload: true});
+					}
+					$scope.message = response.message;
+				}).error(function(response){
+					$scope.message = 'Could not delete expense.';
+				});
+			}
+		}
+	}
+	else {
+		$scope.message = 'Invalid URL.';
+	}
+}]);
+

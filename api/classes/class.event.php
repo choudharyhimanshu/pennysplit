@@ -93,7 +93,7 @@ class Event {
 	    if($slug != '' && $title != '' && $owner != '' && sizeof($members)>0){
 	    	$time = time();
 
-	    	$res = $db->conn->query("UPDATE event SET title='$title',currency= '$currency',created_by='$owner' WHERE slug='$slug'");
+	    	$res = $db->conn->query("UPDATE event SET title='$title',currency= '$currency',created_by='$owner' WHERE slug='$slug' COLLATE latin1_general_cs");
 	    	if($res){
 	    		$fkeid = Security::getIdFromSlug($slug);
 
@@ -154,7 +154,7 @@ class Event {
 	    	'data' => NULL
 	    );
 
-	    $res = $db->conn->query("SELECT eid,slug,view_slug,title,currency,created_on,created_by FROM event WHERE slug = '$slug'");
+	    $res = $db->conn->query("SELECT eid,slug,view_slug,title,currency,created_on,created_by FROM event WHERE slug = '$slug' COLLATE latin1_general_cs");
 
 	    if ($res) {
 	    	if($res->num_rows == 1){
@@ -219,7 +219,7 @@ class Event {
 		$expenses = [];
 
 
-		$res = $db->conn->query("SELECT expenses.exid, expenses.name, expenses.created_on, expenses.tot_amount, payers.mid as `payer_id`, payers.name as `payer_name`, payers.amount as `payer_amount` FROM expenses LEFT JOIN payers ON payers.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
+		$res = $db->conn->query("SELECT expenses.exid, expenses.name, expenses.fk_added_by, expenses.created_on, expenses.tot_amount, payers.mid as `payer_id`, payers.name as `payer_name`, payers.amount as `payer_amount` FROM expenses LEFT JOIN payers ON payers.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
 
 		if($res){
 			if($res->num_rows > 0){
@@ -231,6 +231,7 @@ class Event {
 				$expenses[] = array(
 					'id' => $row['exid'],
 					'name' => $row['name'],
+					'added_by' => $row['fk_added_by'],
 					'created_on' => $row['created_on'],
 					'tot_amount' => $row['tot_amount'],
 					'payers' => [],
@@ -249,6 +250,7 @@ class Event {
 						$expenses[] = array(
 							'id' => $row['exid'],
 							'name' => $row['name'],
+							'added_by' => $row['fk_added_by'],
 							'created_on' => $row['created_on'],
 							'tot_amount' => $row['tot_amount'],
 							'payers' => [],
