@@ -1,7 +1,13 @@
 <div class="row">
 	<div class="container">
-		<h1>{{event_data.title}}</h1>
-		<hr>
+		<div>
+			<button class="pull-right btn btn-default btn-sm" ui-sref="event_edit({slug:event_data.slug})">Edit Event</button>
+			<h1>{{event_data.title}}</h1>
+		</div>
+		<div>
+			<p class="text-muted" style="padding-left:2px;margin-bottom: 0px">Created by {{event_data.owner}} on {{event_data.created_on | date:'mediumDate':'+0530'}}</p>
+		</div>
+		<hr style="margin-top: 0px">
 	</div>
 </div>
 <div class="row">
@@ -36,23 +42,31 @@
 		</div>
 		<div class="col-md-4 panel-overview">
 			<div class="row-fluid">
-				<div class="pull-right"><span class="glyphicon glyphicon-edit" aria-hidden="true" ui-sref="event_edit({slug:event_data.slug})"></span></div>
-				<h3 class="">Event</h3>
-				<p>Created by {{event_data.owner}} on {{event_data.created_on | date:'longDate'}}</p>
-				<h4>Buddies</h4>
+				<h3 style="font-variant: small-caps;">Buddies</h3>
 				<ul>
-					<li ng-repeat="member in event_data.members | orderBy: 'name'">{{member.name}}</li>
+					<li ng-repeat="member in event_data.members" ng-if="member.name">{{member.name}}</li>
 				</ul>
 			</div>
-			<hr>
 			<div class="row-fluid">
-				<h4>Expenses</h4>
+				<div>
+					<button class="pull-right btn btn-default btn-sm" ui-sref="expense_add({slug:event_data.slug})">Add Expense</button>
+					<h3 style="font-variant: small-caps;">Expenses</h3>
+				</div>
 				<ul>
-					<li ng-repeat="expense in event_data.expenses | orderBy: 'name'">
-						{{expense.name}}
-						<div class="pull-right">
-							<span><a href="">Edit</a></span>
-							<span><a href="" ng-click="removeExpense(expense.id)">Delete</a></span>
+					<li ng-repeat="expense in event_data.expenses | orderBy:'created_on':true">
+						<div class="row-fluid clearfix title">
+							<div class="pull-right">
+								<span><a href=""><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></span>
+								<span><a href="" ng-click="removeExpense(expense.id)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></span>
+							</div>
+							<h4>{{expense.name}}</h4>
+						</div>
+						<div class="row-fluid description">
+							<p class="text-muted">
+								Added by {{event_data.members[expense.added_by].name}} on {{expense.created_on | date:'short':'+0530'}}
+								<br>
+								Total amout : {{event_data.currency}} {{expense.tot_amount}}
+							</p>
 						</div>
 					</li>
 				</ul>

@@ -377,7 +377,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 			}
 		}
 
-		$scope.submitExpense = function(){
+		$scope.submitExpense = function(flag_add_another){
 			if($scope.expenseForm.$valid && checkForTrue($scope.form_expense.payees)){
 				for (var i = 0; i < form_expense_master.payers.length; i++) {
 					form_expense_master.payers[i].amount = 0;
@@ -396,7 +396,12 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 
 				EventSrv.addExpense($scope.event_data.slug,form_expense_master).success(function(response){
 					if(response.success == true){
-						$state.go('expense_add',{slug:$scope.event_data.slug},{reload:true});
+						if (flag_add_another) {
+							$state.go('expense_add',{slug:$scope.event_data.slug},{reload:true});
+						}
+						else {
+							$state.go('edit',{slug:$scope.event_data.slug},{reload:true});
+						}
 					}
 					$scope.message = response.message;	
 				}).error(function(response){

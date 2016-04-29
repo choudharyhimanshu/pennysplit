@@ -67,7 +67,14 @@
 				  		</div>
 				  	</div>
 				  	<div class="form-group">
-					  	<button type="submit" class="btn btn-default btn-lg btn-block" ng-click="submitExpense()" style="background-color: #34495e;color: #fff;">Submit</button>
+  			  			<div class="row">
+  	  				  		<div class="col-md-6 col-sm-12 col-xs-12" style="margin-bottom: 10px;">
+  	  						  	<button type="submit" class="btn btn-default btn-lg btn-block" ng-click="submitExpense(true)" style="background-color: #34495e;color: #fff;">Save & Add another</button>
+  	  				  		</div>
+  	  				  		<div class="col-md-6 col-sm-12 col-xs-12">
+  	  						  	<input type="submit" ng-click="submitExpense(false)" class="btn btn-default btn-lg btn-block" ng-class="{'disabled' : is_loading}" value="Submit" style="background-color: #16a085;color: #fff;" />
+  	  				  		</div>
+  			  			</div>	
 					</div>
 				</form>
 			</div>
@@ -77,9 +84,9 @@
 		</div>
 		<div class="col-md-4 panel-overview">
 			<div class="row-fluid">
-				<h3 style="text-transform: uppercase;">Expenses</h3>
+				<h3 style="font-variant: small-caps;">Expenses</h3>
 				<ul>
-					<li ng-repeat="expense in event_data.expenses | orderBy: 'name'">
+					<li ng-repeat="expense in event_data.expenses | orderBy:'created_on':true">
 						<div class="row-fluid clearfix title">
 							<div class="pull-right">
 								<span><a href=""><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></span>
