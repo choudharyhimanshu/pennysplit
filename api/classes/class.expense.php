@@ -45,15 +45,15 @@ class Expense {
 		    		$fk_xid = $db->conn->insert_id;
 		    		$values = [];
 		    		foreach( $payers as $payer ) {
-		    		    $values[] = '('.$fk_xid.','.$payer['id'].',"'.$payer['name'].'",'.$payer['amount'].')';
+		    		    $values[] = '('.$fk_xid.','.$payer['id'].','.$payer['amount'].')';
 		    		}
-		    		$res = $db->conn->query('INSERT INTO payers (fk_exid,mid,name,amount) VALUES '.implode(',', $values));
+		    		$res = $db->conn->query('INSERT INTO payers (fk_exid,mid,amount) VALUES '.implode(',', $values));
 		    		if($res){
 		    			$values = [];
 		    			foreach( $payees as $payee ) {
-		    			    $values[] = '('.$fk_xid.','.$payee['id'].',"'.$payee['name'].'")';
+		    			    $values[] = '('.$fk_xid.','.$payee['id'].')';
 		    			}
-		    			$res = $db->conn->query('INSERT INTO payees (fk_exid,mid,name) VALUES '.implode(',', $values));
+		    			$res = $db->conn->query('INSERT INTO payees (fk_exid,mid) VALUES '.implode(',', $values));
 		    			if($res){
 		    				$response['success'] = TRUE;
 		    				$response['message'] = "Successfully added expense.";

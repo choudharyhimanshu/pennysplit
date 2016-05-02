@@ -55,10 +55,11 @@ pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($sco
 	};
 }]);
 
-pennysplit.controller('EditEventCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv', function($scope,$rootScope,$state,$stateParams,EventSrv){
+pennysplit.controller('EditEventCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,EventSrv,UtilsSrv){
 	if($stateParams.slug){
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			$scope.event_data = response.data;
+			var deleted_members = [];
 
 			$scope.is_loading = false;
 			$scope.create = {
@@ -71,23 +72,22 @@ pennysplit.controller('EditEventCtrl', ['$scope','$rootScope','$state','$statePa
 			$scope.addMember = function(){
 				if($scope.create.members.length < 50){
 					$scope.create.members.push({
-						id : null,
+						id : UtilsSrv.maxId($scope.create.members)+1,
 						name : ''
 					});
 				}
 			};
 
-			$scope.removeMember = function(member_id){
-				$scope.create.members.splice(member_id,1);
+			$scope.removeMember = function(index){
+				deleted_members.push($scope.create.members[index].id);
+				$scope.create.members.splice(index,1);
 			}
 
 			$scope.submitEditEvent = function(){
 				if($scope.createForm.$valid && $scope.create.members.length > 0){
 					$scope.message = 'Loading..';
 					$scope.is_loading = true;
-					for(var i=0; i<$scope.create.members.length;i++){
-						$scope.create.members[i].id=i;
-					}
+					$scope.create.delete_members = deleted_members;
 					EventSrv.updateEvent($scope.event_data.slug,$scope.create).success(function(response){
 						if(response.success == true){
 							$state.go('expense_add',{slug:response.data.slug},{reload:true});
@@ -123,7 +123,7 @@ pennysplit.controller('ViewCtrl', ['$rootScope','$stateParams', function($rootSc
 	$rootScope.slug = $stateParams.slug;
 }]);
 
-pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv', function($scope,$state,$stateParams,EventSrv){
+pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$state,$stateParams,EventSrv,UtilsSrv){
 	if($stateParams.slug){
 		var addPayment = function(id,amount){
 			for (var i = $scope.event_balances.length - 1; i >= 0; i--) {
@@ -132,6 +132,8 @@ pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv', 
 				}
 			}
 		}
+
+		$scope.getNamebyId = UtilsSrv.getNamebyId;
 
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			$scope.event_data = response.data;
@@ -289,7 +291,7 @@ pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv', 
 }]);
 
 
-pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','EventSrv', function($scope,$state,$stateParams,EventSrv){
+pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$state,$stateParams,EventSrv,UtilsSrv){
 	if($stateParams.slug){
 		var checkForTrue = function(arr){
 			var flag = false;
@@ -306,7 +308,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 			name : '',
 			added_by : null,
 			payers : [{
-				id : null,
+				id : 0,
 				amount : 0
 			}],
 			payees : []
@@ -321,6 +323,8 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			$scope.event_data = response.data;
+
+			$scope.form_expense.payers[0].id = $scope.event_data.members[0].id;
 
 			for (var i = 0; i < response.data.members.length; i++) {
 				$scope.form_expense.payees.push({
@@ -342,11 +346,11 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 			$scope.form_expense.payers.splice(1);
 			if(val){
 				$scope.form_expense.payers.push({
-					id : null,
+					id : $scope.event_data.members[0].id,
 					amount : 0
 				});
 				$scope.form_expense.payers.push({
-					id : null,
+					id : $scope.event_data.members[0].id,
 					amount : 0
 				});
 			}
@@ -363,7 +367,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 		$scope.addPayer = function(){
 			$scope.flag_min_payers = false;
 			$scope.form_expense.payers.push({
-				id : null,
+				id : $scope.event_data.members[0].id,
 				amount : 0
 			});
 		}
@@ -386,7 +390,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 				form_expense_master.name = $scope.form_expense.name;
 				form_expense_master.added_by = $scope.form_expense.added_by;
 				for (var i = 0; i < $scope.form_expense.payers.length; i++) {
-					form_expense_master.payers[$scope.form_expense.payers[i].id].amount += $scope.form_expense.payers[i].amount;
+					form_expense_master.payers[UtilsSrv.getIndexbyId(form_expense_master.payers,$scope.form_expense.payers[i].id)].amount += $scope.form_expense.payers[i].amount;
 				}
 				for (var i = 0; i < $scope.form_expense.payees.length; i++) {
 					if($scope.form_expense.payees[i].flag == true){

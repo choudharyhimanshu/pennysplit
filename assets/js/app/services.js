@@ -16,3 +16,32 @@ pennysplit.service('EventSrv', ['$http','$stateParams','GLOBALS', function($http
 		return $http.delete(GLOBALS.API_BASE+'expense/delete/'+slug+'/'+exid);
 	}
 }]);
+
+pennysplit.service('UtilsSrv', ['$rootScope',function($rootScope){
+	this.maxId = function(arr){
+		var max_id = -1;
+		for(var i=0;i<arr.length;i++){
+			if(max_id < parseInt(arr[i].id)){
+				max_id = parseInt(arr[i].id);
+			}
+		}
+		return max_id;
+	}
+	this.getIndexbyId = function(arr,id){
+		for(var i=0;i<arr.length;i++){
+			if(id == arr[i].id){
+				return i;
+			}
+		}
+		return null;
+	}
+
+	this.getNamebyId = function(arr,id){
+		for(var i=0;i<arr.length;i++){
+			if(id == arr[i].id){
+				return arr[i].name;
+			}
+		}
+		return '404';
+	}
+}]);

@@ -83,6 +83,7 @@ class Event {
 	    $currency = isset($params['currency']) ? $params['currency'] : 'INR';
 	    $owner = isset($params['owner']) ? $params['owner'] : '';
 	    $members = isset($params['members']) ? $params['members'] : [];
+	    $delete_members = isset($params['delete_members']) ? $params['delete_members'] : [];
 
 	    $response = array(
 	    	'success' => FALSE,
@@ -106,14 +107,20 @@ class Event {
 	    				}
 	    				$res = $db->conn->query('INSERT INTO buddies (fk_eid,mid,name,added_on) VALUES '.implode(',', $values));
 	    				if($res) {
-	    					$response['success'] = TRUE;
-	    					$response['message'] = "Successfully updated event.";
-	    					$response['data'] = array(
-	    						'title' => $title,
-	    						'currency' => $currency,
-	    						'owner' => $owner,
-	    						'slug' => $slug
-	    					);
+	    					$res = SELF::deleteMembers($fkeid,$delete_members);
+	    					if($res){
+	    						$response['success'] = TRUE;
+	    						$response['message'] = "Successfully updated event.";
+	    						$response['data'] = array(
+	    							'title' => $title,
+	    							'currency' => $currency,
+	    							'owner' => $owner,
+	    							'slug' => $slug
+	    						);
+	    					}
+	    					else {
+			    				$response['message'] = "Unable to delete buddies.";
+	    					}
 	    				}
 	    				else {
 	    					$response['message'] = "Unable to add buddies. Error : ".$db->conn->error;
@@ -203,7 +210,7 @@ class Event {
 		if($res){
 			while ($row = $res->fetch_assoc()) {
 				$members[] = array(
-					'id' => $row['mid'],
+					'id' => (int)$row['mid'],
 					'name' => $row['name'],
 					'added_on' => $row['added_on']
 				);
@@ -219,7 +226,7 @@ class Event {
 		$expenses = [];
 
 
-		$res = $db->conn->query("SELECT expenses.exid, expenses.name, expenses.fk_added_by, expenses.created_on, expenses.tot_amount, payers.mid as `payer_id`, payers.name as `payer_name`, payers.amount as `payer_amount` FROM expenses LEFT JOIN payers ON payers.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
+		$res = $db->conn->query("SELECT expenses.exid, expenses.name, expenses.fk_added_by, expenses.created_on, expenses.tot_amount, payers.mid as `payer_id`, payers.amount as `payer_amount` FROM expenses LEFT JOIN payers ON payers.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
 
 		if($res){
 			if($res->num_rows > 0){
@@ -229,45 +236,43 @@ class Event {
 
 				$prev_exid = $row['exid'];
 				$expenses[] = array(
-					'id' => $row['exid'],
+					'id' => (int)$row['exid'],
 					'name' => $row['name'],
-					'added_by' => $row['fk_added_by'],
+					'added_by' => (int)$row['fk_added_by'],
 					'created_on' => $row['created_on'],
-					'tot_amount' => $row['tot_amount'],
+					'tot_amount' => (double)$row['tot_amount'],
 					'payers' => [],
 					'payees' => []
 				);
 
 				$expenses[$count_exp]['payers'][] = array(
-					'id' => $row['payer_id'],
-					'name' => $row['payer_name'],
-					'amount' => $row['payer_amount'] 
+					'id' => (int)$row['payer_id'],
+					'amount' => (double)$row['payer_amount'] 
 				);
 
 				while ($row = $res->fetch_assoc()) {
 					if($row['exid'] != $prev_exid){
 						$prev_exid = $row['exid'];
 						$expenses[] = array(
-							'id' => $row['exid'],
+							'id' => (int)$row['exid'],
 							'name' => $row['name'],
-							'added_by' => $row['fk_added_by'],
+							'added_by' => (int)$row['fk_added_by'],
 							'created_on' => $row['created_on'],
-							'tot_amount' => $row['tot_amount'],
+							'tot_amount' => (double)$row['tot_amount'],
 							'payers' => [],
 							'payees' => []
 						);
 						$count_exp++;
 					}
 					$expenses[$count_exp]['payers'][] = array(
-						'id' => $row['payer_id'],
-						'name' => $row['payer_name'],
-						'amount' => $row['payer_amount'] 
+						'id' => (int)$row['payer_id'],
+						'amount' => (double)$row['payer_amount'] 
 					);
 				}
 			}
 		}
 
-		$res = $db->conn->query("SELECT expenses.exid, expenses.name, payees.mid as `payee_id`, payees.name as `payee_name` FROM expenses LEFT JOIN payees ON payees.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
+		$res = $db->conn->query("SELECT expenses.exid, expenses.name, payees.mid as `payee_id` FROM expenses LEFT JOIN payees ON payees.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
 
 		if($res){
 			if($res->num_rows > 0){
@@ -278,8 +283,7 @@ class Event {
 				$prev_exid = $row['exid'];
 
 				$expenses[$count_exp]['payees'][] = array(
-					'id' => $row['payee_id'],
-					'name' => $row['payee_name']
+					'id' => (int)$row['payee_id'],
 				);
 
 				while ($row = $res->fetch_assoc()) {
@@ -290,8 +294,7 @@ class Event {
 
 					if($expenses[$count_exp]['id'] == $row['exid']){
 						$expenses[$count_exp]['payees'][] = array(
-							'id' => $row['payee_id'],
-							'name' => $row['payee_name']
+							'id' => (int)$row['payee_id'],
 						);
 					}
 				}
@@ -299,6 +302,41 @@ class Event {
 		}
 
 		return $expenses;
+	}
+
+	private function deleteMembers($eid,$mids)
+	{
+		if(empty($mids)){
+			return TRUE;
+		}
+
+		Global $db;
+		$mids_str = join(',', $mids);
+		$flag = FALSE;
+
+		$expenses = $db->conn->query("SELECT exid FROM expenses WHERE fk_eid=$eid;");
+		if($expenses){
+			while ($row = $expenses->fetch_assoc()) {
+				$exid = $row['exid'];
+				$res = $db->conn->query("DELETE FROM payers WHERE fk_exid='$exid' AND mid IN ($mids_str);");
+				if ($res) {
+					$res = $db->conn->query("DELETE FROM payees WHERE fk_exid='$exid' AND mid IN ($mids_str);");
+					if ($res) {
+						$flag = TRUE;
+					}
+					else {
+						$flag = FALSE;
+					}
+				}
+				else {
+					$flag = FALSE;
+				}
+			}
+		}
+		else {
+			$flag = FALSE;
+		}
+		return $flag;
 	}
 }
 ?>

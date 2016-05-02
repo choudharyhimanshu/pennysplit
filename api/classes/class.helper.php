@@ -60,6 +60,9 @@ class Helper {
     {
         Global $db;
         if (is_array($input)) {
+            if(empty($input)){
+                return $input;
+            }
             foreach($input as $var=>$val) {
                 $output[$var] = SELF::sanitize($val);
             }
