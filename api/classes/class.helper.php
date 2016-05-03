@@ -76,5 +76,25 @@ class Helper {
         }
         return $output;
     }
+
+    static public function getIndexFromId($arr,$id)
+    {
+        for ($i=0; $i < sizeof($arr); $i++) { 
+            if($arr[$i]['id'] == $id){
+                return $i;
+            }
+        }
+        return NULL;
+    }
+
+    static public function getNameFromId($arr,$id)
+    {
+        foreach ($arr as $val) {
+            if($val['id'] == $id){
+                return $val['name'];
+            }
+        }
+        return '404';
+    }
 }
 ?>

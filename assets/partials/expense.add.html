@@ -89,7 +89,7 @@
 					<li ng-repeat="expense in event_data.expenses | orderBy:'created_on':true">
 						<div class="row-fluid clearfix title">
 							<div class="pull-right">
-								<span><a href=""><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></span>
+								<!-- <span><a href=""><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></span> -->
 								<span><a href="" ng-click="removeExpense(expense.id)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></span>
 							</div>
 							<h4>{{expense.name}}</h4>

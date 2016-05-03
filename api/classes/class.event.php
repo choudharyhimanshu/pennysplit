@@ -182,11 +182,163 @@ class Event {
 	    		$response['data']['expenses'] = SELF::getExpenses($eid);
 	    		$response['data']['expenses_count'] = sizeof($response['data']['expenses']);
 
+	    		$event_total = 0;
+	    		foreach ($response['data']['expenses'] as $expense) {
+	    			$event_total += $expense['tot_amount'];
+	    		}
+
+	    		$response['data']['total_spent'] = round($event_total,2);
 	    		$response['data']['edit_url'] = APP_BASE.'/edit/'.$response['data']['slug'];
 	    		$response['data']['view_url'] = APP_BASE.'/view/'.$response['data']['view_slug'];
 
 	    		$response['success'] = TRUE;
 	    		$response['message'] = 'Successfully fetched the event.';
+	    	}
+	    	else {
+	    		$response['message'] = 'Event not found.';
+	    	}
+	    }
+	    else {
+	    	$response['message'] = 'Some error occurred. Error : '.$db->conn->error;
+	    }
+
+	    $db->close();
+	    $app->response->write(json_encode($response));
+	}
+
+	public function getPvtSettlements($slug)
+	{
+		Global $app, $db;
+	    $app->response->headers->set('Content-Type', 'application/json');
+
+	    $db->connect();
+
+	    $slug = Helper::sanitize($slug);
+
+	    $response = array(
+	    	'success' => FALSE,
+	    	'message' => '',
+	    	'data' => NULL
+	    );
+
+	    $res = $db->conn->query("SELECT eid FROM event WHERE slug = '$slug' COLLATE latin1_general_cs");
+
+	    if ($res) {
+	    	if($res->num_rows == 1){
+	    		$row = $res->fetch_assoc();
+
+	    		$eid = $row['eid'];
+
+	    		$members = SELF::getMembers($eid);
+	    		$expenses = SELF::getExpenses($eid);
+
+	    		$balances = [];
+	    		$baskets = [];
+	    		$settlements = [];
+
+	    		foreach ($members as $member) {
+	    			$balances[] = array(
+	    				'id' => $member['id'],
+	    				'name' => $member['name'],
+	    				'balance' => 0
+	    			);
+	    		}
+
+	    		foreach ($expenses as $expense) {
+	    			$total_amount = 0.0;
+	    			foreach ($expense['payers'] as $payer) {
+	    				$index = Helper::getIndexFromId($balances,$payer['id']);
+	    				if ($index !== NULL) {
+		    				$balances[$index]['balance'] += $payer['amount'];
+		    				$total_amount += round($payer['amount'],2);
+	    				}
+	    			}
+	    			$num_sharers = sizeof($expense['payees']);
+	    			foreach ($expense['payees'] as $payee) {
+	    				$index = Helper::getIndexFromId($balances,$payee['id']);
+	    				if ($index !== NULL) {
+		    				$balances[$index]['balance'] -= round($total_amount/$num_sharers,2);
+	    				}
+	    			}
+	    			$expense['tot_amount'] = $total_amount;
+	    		}
+
+	    		foreach ($balances as $balance) {
+	    			if ($balance['balance'] > 0) {
+	    				$baskets['positive'][] = $balance;
+	    			}
+	    			elseif ($balance['balance'] < 0) {
+	    				$baskets['negative'][] = $balance;
+	    			}
+	    			elseif ($balance['balance'] == 0) {
+	    				$baskets['clear'][] = $balance;
+	    			}
+	    		}
+
+	    		$master_baskets = $baskets;
+
+	    		$index_pos_basket = 0;
+
+	    		for ($i=0; $i < sizeof($baskets['negative']); $i++) {
+	    			if ($index_pos_basket > sizeof($baskets['positive'])) {
+	    				break;
+	    			}
+	    			if(abs($baskets['negative'][$i]['balance']) == $baskets['positive'][$index_pos_basket]['balance']){
+	    				$settlements[] = array(
+	    					'from' => array(
+	    						'id' => $baskets['negative'][$i]['id'],
+	    						'name' => $baskets['negative'][$i]['name']
+	    					),
+	    					'to' => array(
+	    						'id' => $baskets['positive'][$index_pos_basket]['id'],
+	    						'name' => $baskets['positive'][$index_pos_basket]['name']
+	    					),
+	    					'amount' => round(abs($baskets['negative'][$i]['balance']),2)
+	    				);
+	    				$baskets['positive'][$index_pos_basket]['balance'] = 0;
+	    				$baskets['negative'][$i]['balance'] = 0;
+	    				$index_pos_basket++;
+	    			}
+	    			elseif(abs($baskets['negative'][$i]['balance']) < $baskets['positive'][$index_pos_basket]['balance']){
+	    				$settlements[] = array(
+	    					'from' => array(
+	    						'id' => $baskets['negative'][$i]['id'],
+	    						'name' => $baskets['negative'][$i]['name']
+	    					),
+	    					'to' => array(
+	    						'id' => $baskets['positive'][$index_pos_basket]['id'],
+	    						'name' => $baskets['positive'][$index_pos_basket]['name']
+	    					),
+	    					'amount' => round(abs($baskets['negative'][$i]['balance']),2)
+	    				);
+	    				$baskets['positive'][$index_pos_basket]['balance'] += $baskets['negative'][$i]['balance'];
+	    				$baskets['negative'][$i]['balance'] = 0;
+	    			}
+	    			elseif(abs($baskets['negative'][$i]['balance']) > $baskets['positive'][$index_pos_basket]['balance']){
+	    				$settlements[] = array(
+	    					'from' => array(
+	    						'id' => $baskets['negative'][$i]['id'],
+	    						'name' => $baskets['negative'][$i]['name']
+	    					),
+	    					'to' => array(
+	    						'id' => $baskets['positive'][$index_pos_basket]['id'],
+	    						'name' => $baskets['positive'][$index_pos_basket]['name']
+	    					),
+	    					'amount' => round(abs($baskets['positive'][$index_pos_basket]['balance']),2)
+	    				);
+	    				$baskets['negative'][$i]['balance'] += $baskets['positive'][$index_pos_basket]['balance'];
+	    				$baskets['positive'][$index_pos_basket]['balance'] += 0;
+	    				$i--;$index_pos_basket++;
+	    			}
+	    		}
+
+	    		// $response['data']['members'] = $members;
+	    		// $response['data']['expenses'] = $expenses;
+	    		$response['data']['balances'] = $balances;
+	    		$response['data']['baskets'] = $master_baskets;
+	    		$response['data']['settlements'] = $settlements;
+	    		$response['success'] = TRUE;
+	    		$response['message'] = 'Successfully fetched settlements.';
 	    	}
 	    	else {
 	    		$response['message'] = 'Event not found.';
@@ -224,6 +376,7 @@ class Event {
 		Global $db;
 
 		$expenses = [];
+		$members = SELF::getMembers($eid);
 
 
 		$res = $db->conn->query("SELECT expenses.exid, expenses.name, expenses.fk_added_by, expenses.created_on, expenses.tot_amount, payers.mid as `payer_id`, payers.amount as `payer_amount` FROM expenses LEFT JOIN payers ON payers.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
@@ -240,15 +393,19 @@ class Event {
 					'name' => $row['name'],
 					'added_by' => (int)$row['fk_added_by'],
 					'created_on' => $row['created_on'],
-					'tot_amount' => (double)$row['tot_amount'],
+					'tot_amount' => 0,
 					'payers' => [],
 					'payees' => []
 				);
 
-				$expenses[$count_exp]['payers'][] = array(
-					'id' => (int)$row['payer_id'],
-					'amount' => (double)$row['payer_amount'] 
-				);
+				if(Helper::getIndexFromId($members,(int)$row['payer_id']) !== NULL){
+					$expenses[$count_exp]['tot_amount'] += (double)$row['payer_amount'];
+					$expenses[$count_exp]['payers'][] = array(
+						'id' => (int)$row['payer_id'],
+						'name' => Helper::getNameFromId($members,(int)$row['payer_id']),
+						'amount' => (double)$row['payer_amount'] 
+					);
+				}
 
 				while ($row = $res->fetch_assoc()) {
 					if($row['exid'] != $prev_exid){
@@ -258,16 +415,20 @@ class Event {
 							'name' => $row['name'],
 							'added_by' => (int)$row['fk_added_by'],
 							'created_on' => $row['created_on'],
-							'tot_amount' => (double)$row['tot_amount'],
+							'tot_amount' => 0,
 							'payers' => [],
 							'payees' => []
 						);
 						$count_exp++;
 					}
-					$expenses[$count_exp]['payers'][] = array(
-						'id' => (int)$row['payer_id'],
-						'amount' => (double)$row['payer_amount'] 
-					);
+					if(Helper::getIndexFromId($members,(int)$row['payer_id']) !== NULL){
+						$expenses[$count_exp]['tot_amount'] += (double)$row['payer_amount'];
+						$expenses[$count_exp]['payers'][] = array(
+							'id' => (int)$row['payer_id'],
+							'name' => Helper::getNameFromId($members,(int)$row['payer_id']),
+							'amount' => (double)$row['payer_amount'] 
+						);
+					}
 				}
 			}
 		}
@@ -282,9 +443,12 @@ class Event {
 
 				$prev_exid = $row['exid'];
 
-				$expenses[$count_exp]['payees'][] = array(
-					'id' => (int)$row['payee_id'],
-				);
+				if(Helper::getIndexFromId($members,(int)$row['payee_id']) !== NULL){
+					$expenses[$count_exp]['payees'][] = array(
+						'id' => (int)$row['payee_id'],
+						'name' => Helper::getNameFromId($members,(int)$row['payee_id'])
+					);
+				}
 
 				while ($row = $res->fetch_assoc()) {
 					if($row['exid'] != $prev_exid){
@@ -293,9 +457,12 @@ class Event {
 					}
 
 					if($expenses[$count_exp]['id'] == $row['exid']){
-						$expenses[$count_exp]['payees'][] = array(
-							'id' => (int)$row['payee_id'],
-						);
+						if(Helper::getIndexFromId($members,(int)$row['payee_id']) !== NULL){
+							$expenses[$count_exp]['payees'][] = array(
+								'id' => (int)$row['payee_id'],
+								'name' => Helper::getNameFromId($members,(int)$row['payee_id'])
+							);
+						}
 					}
 				}
 			}

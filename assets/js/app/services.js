@@ -9,6 +9,9 @@ pennysplit.service('EventSrv', ['$http','$stateParams','GLOBALS', function($http
 	this.getPvtEvent = function(slug){
 		return $http.get(GLOBALS.API_BASE+'event/view/private/'+slug);
 	}
+	this.getPvtEventSettlements = function(slug){
+		return $http.get(GLOBALS.API_BASE+'event/settlement/private/'+slug);
+	}
 	this.addExpense = function(slug,form_data){
 		return $http.post(GLOBALS.API_BASE+'expense/add/'+slug,form_data);
 	}
@@ -34,14 +37,5 @@ pennysplit.service('UtilsSrv', ['$rootScope',function($rootScope){
 			}
 		}
 		return null;
-	}
-
-	this.getNamebyId = function(arr,id){
-		for(var i=0;i<arr.length;i++){
-			if(id == arr[i].id){
-				return arr[i].name;
-			}
-		}
-		return '404';
 	}
 }]);
