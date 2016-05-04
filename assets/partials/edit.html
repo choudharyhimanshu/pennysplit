@@ -14,13 +14,42 @@
 	<div class="container">
 		<div class="col-md-8">
 			<h4 class="text-muted">The group spent {{event_data.currency}} <b class="text-primary">{{event_data.total_spent}}</b> in total.</h4>
+			<!-- <div class="row-fluid">
+				<h3>These are the final balances</h3>
+				<div class="row">
+					<div class="col-md-4">
+						<h4 class="text-center">Positive</h4>
+						<p ng-repeat="item in balance_baskets.positive">{{item.name}}<span class="pull-right">{{item.balance}}</span></p>
+					</div>
+					<div class="col-md-4">
+						<h4 class="text-center">Negative</h4>
+						<p ng-repeat="item in balance_baskets.negative">{{item.name}}<span class="pull-right">{{item.balance}}</span></p>
+					</div>
+					<div class="col-md-4">
+						<h4 class="text-center">Already Settled</h4>
+						<p ng-repeat="item in balance_baskets.clear">{{item.name}}<span class="pull-right">{{item.balance}}</span></p>
+					</div>
+				</div>
+			</div> -->
 			<div class="row-fluid">
 				<h3>How to settle all debts</h3>
-				<ul class="list-group">
-				  <li class="list-group-item" ng-repeat="settlement in settlements">{{settlement.from.name}} gives {{event_data.currency}} <b>{{settlement.amount}}</b> to {{settlement.to.name}}</li>
-				</ul>
+				<div class="row">
+					<ul class="col-md-8 list-settlements">
+					  	<li ng-repeat="settlement in settlements">
+					  		<div class="clearfix">
+					  			<p class="pull-right text-muted" style="font-size: 10pt;font-weight:900;padding-top: 8px;">{{event_data.currency}}</p>
+					  			<p class="pull-left" style="font-size: 14pt;">{{settlement.from.name}}</p>
+					  		</div>
+					  		<div class="clearfix">
+					  			<p class="pull-left"><span class="glyphicon glyphicon-arrow-right" aria-hidden="true" style="color:#16a085"></span>
+					  		{{settlement.to.name}}</p>
+					  			<p class="pull-right text-info">{{settlement.amount}}</p>
+					  		</div>
+					  	</li>
+					</ul>
+				</div>
 			</div>
-			<div class="table-responsive" style="width: 100%;overflow: auto;"> 
+			<!-- <div class="table-responsive" style="width: 100%;overflow: auto;"> 
 				<table class="table table-striped text-center">
 					<thead>
 						<tr style="font-weight: 900;">
@@ -35,7 +64,7 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
+			</div> -->
 		</div>
 		<div class="col-md-4 panel-overview">
 			<div class="row-fluid">

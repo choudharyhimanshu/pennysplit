@@ -280,7 +280,7 @@ class Event {
 	    		$index_pos_basket = 0;
 
 	    		for ($i=0; $i < sizeof($baskets['negative']); $i++) {
-	    			if ($index_pos_basket > sizeof($baskets['positive'])) {
+	    			if ($index_pos_basket >= sizeof($baskets['positive'])) {
 	    				break;
 	    			}
 	    			if(abs($baskets['negative'][$i]['balance']) == $baskets['positive'][$index_pos_basket]['balance']){

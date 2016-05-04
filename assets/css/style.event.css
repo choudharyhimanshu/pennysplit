@@ -108,3 +108,18 @@
     -o-transition: max-height 1500ms ease-in;
     transition: max-height 1500ms ease-in;
 }
+
+.list-settlements li{
+	width: 100%;
+	height: auto;
+	background-color: #FAFAFA;
+	/*border: 1px solid black;*/
+	margin: 5px 0px 5px 0px;
+	padding: 20px;
+	list-style-type: none;
+}
+
+.list-settlements li p {
+	font-size: 12pt;
+	margin:0px;
+}
