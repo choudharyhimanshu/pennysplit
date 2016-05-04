@@ -98,7 +98,7 @@
 							<p class="text-muted">
 								Added by {{event_data.members[expense.added_by].name}} on {{expense.created_on | date:'short':'+0530'}}
 								<br>
-								Total amout : {{event_data.currency}} {{expense.tot_amount}}
+								Total amout : {{event_data.currency}} {{expense.tot_amount | currency : ''}}
 							</p>
 						</div>
 					</li>
