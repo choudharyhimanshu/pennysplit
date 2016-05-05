@@ -12,3 +12,23 @@
         </div>
     </div>
 </div>
+
+<!-- Share Event Modal -->
+<div class="modal fade" id="share_event_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="margin-top:10%;">
+        <div class="modal-content">
+            <div class="modal-body" style="">
+                <div class="input-group">
+                    <input type="text" class="form-control" aria-label="..." ng-model="share_url" ng-value="view_url" ng-init="share_type='View Only'">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{share_type}} <span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="" ng-click="share_url=view_url;share_type='View Only';">View Only</a></li>
+                            <li><a href="" ng-click="share_url=edit_url;share_type='Editable'">Editable</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

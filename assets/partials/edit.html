@@ -1,13 +1,22 @@
 <div class="row">
 	<div class="container">
-		<div>
-			<button class="pull-right btn btn-default btn-sm" ui-sref="event_edit({slug:event_data.slug})">Edit Event</button>
-			<h1>{{event_data.title}}</h1>
+		<div class="row">
+			<div class="col-md-9">
+				<h1>{{event_data.title}}</h1>
+				<p class="text-muted" style="padding-left:2px;margin-bottom: 0px">Created by {{event_data.owner}} on {{event_data.created_on | date:'mediumDate':'+0530'}}</p>
+			</div>
+			<div class="col-md-3">
+				<div class="row" style="padding-top: 20px;">
+					<div class="col-md-6">
+						<button class="btn btn-danger btn-block" style="margin-bottom: 10px;" data-toggle="modal" data-target="#share_event_modal"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Share</button>
+					</div>
+					<div class="col-md-6">
+						<button class="btn btn-default btn-block" ui-sref="event_edit({slug:event_data.slug})">Edit Event</button>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div>
-			<p class="text-muted" style="padding-left:2px;margin-bottom: 0px">Created by {{event_data.owner}} on {{event_data.created_on | date:'mediumDate':'+0530'}}</p>
-		</div>
-		<hr style="margin-top: 0px">
+		<hr style="margin-top: 10px">
 	</div>
 </div>
 <div class="row">

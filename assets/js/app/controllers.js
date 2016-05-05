@@ -123,7 +123,7 @@ pennysplit.controller('ViewCtrl', ['$rootScope','$stateParams', function($rootSc
 	$rootScope.slug = $stateParams.slug;
 }]);
 
-pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$state,$stateParams,EventSrv,UtilsSrv){
+pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,EventSrv,UtilsSrv){
 	if($stateParams.slug){
 		var addPayment = function(id,amount){
 			for (var i = $scope.event_balances.length - 1; i >= 0; i--) {
@@ -136,6 +136,8 @@ pennysplit.controller('EditCtrl', ['$scope','$state','$stateParams','EventSrv','
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			if(response.success){
 				$scope.event_data = response.data;
+				$rootScope.view_url = response.data.view_url;
+				$rootScope.edit_url = response.data.edit_url;
 			}
 			else {
 				$scope.message = response.message;
