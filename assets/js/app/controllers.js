@@ -1,9 +1,9 @@
 
 pennysplit.controller('WelcomeCtrl', ['$scope','$rootScope', function($scope,$rootScope){
-	console.log('WelcomeCtrl');
+	console.log('Welcome User.');
 }]);
 
-pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($scope,$state,EventSrv){
+pennysplit.controller('CreateCtrl', ['$scope','$rootScope','$state','EventSrv', function($scope,$rootScope,$state,EventSrv){
 
 	$scope.is_loading = false;
 	$scope.create = {
@@ -45,11 +45,13 @@ pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($sco
 				if(response.success == true){
 					$state.go('expense_add',{slug:response.data.slug});
 				}
-				$scope.is_loading = false;
-				$scope.message = response.message;
+				else {
+					$rootScope.msg = response.message;
+					angular.element('#error_modal').modal('show');
+				}
 			}).error(function(response){
-				$scope.is_loading = false;
-				$scope.message = 'Some error occured. Please try again later.';
+				$rootScope.msg = 'Unknown Error.';
+				angular.element('#error_modal').modal('show');
 			});
 		}
 	};
@@ -58,6 +60,12 @@ pennysplit.controller('CreateCtrl', ['$scope','$state','EventSrv', function($sco
 pennysplit.controller('EditEventCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,EventSrv,UtilsSrv){
 	if($stateParams.slug){
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
+			if (response.success != true) {
+				$rootScope.msg = response.message;
+				angular.element('#error_modal').modal('show');
+				return false;
+			}
+
 			$scope.event_data = response.data;
 			var deleted_members = [];
 
@@ -92,11 +100,13 @@ pennysplit.controller('EditEventCtrl', ['$scope','$rootScope','$state','$statePa
 						if(response.success == true){
 							$state.go('expense_add',{slug:response.data.slug},{reload:true});
 						}
-						$scope.is_loading = false;
-						$scope.message = response.message;
+						else{
+							$rootScope.msg = response.message;
+							angular.element('#error_modal').modal('show');
+						}
 					}).error(function(response){
-						$scope.is_loading = false;
-						$scope.message = 'Some error occured. Please try again later.';
+						$rootScope.msg = 'Unknown Error.';
+						angular.element('#error_modal').modal('show');
 					});
 				}
 			};
@@ -111,28 +121,42 @@ pennysplit.controller('EditEventCtrl', ['$scope','$rootScope','$state','$statePa
 			}
 
 		}).error(function(response){
-			console.log(response);
+			$rootScope.msg = 'Unknown Error.';
+			angular.element('#error_modal').modal('show');
 		});
 	}
 	else {
-		$scope.message = 'Invalid URL.';
+		$rootScope.msg = 'Invalid URL.';
+		angular.element('#error_modal').modal('show');
 	}
 }]);
 
-pennysplit.controller('ViewCtrl', ['$rootScope','$stateParams', function($rootScope,$stateParams){
-	$rootScope.slug = $stateParams.slug;
+pennysplit.controller('ViewCtrl', ['$scope','$rootScope','$stateParams','EventSrv', function($scope,$rootScope,$stateParams,EventSrv){
+	if($stateParams.slug){
+		EventSrv.getPubEvent($stateParams.slug).success(function(response){
+			if(response.success){
+				$scope.event_data = response.data;
+				$scope.balances = response.data.settlements.balances;
+				$scope.balance_baskets = response.data.settlements.baskets;			
+				$scope.settlements = response.data.settlements.settlements;
+			}
+			else {
+				$rootScope.msg = response.message;
+				angular.element('#error_modal').modal('show');
+			}
+		}).error(function(response){
+			$rootScope.msg = 'Unknown Error.';
+			angular.element('#error_modal').modal('show');
+		});
+	}
+	else {
+		$rootScope.msg = 'Invalid URL.';
+		angular.element('#error_modal').modal('show');
+	}
 }]);
 
 pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,EventSrv,UtilsSrv){
 	if($stateParams.slug){
-		var addPayment = function(id,amount){
-			for (var i = $scope.event_balances.length - 1; i >= 0; i--) {
-				if($scope.event_balances[i].id == id){
-					$scope.event_balances[i].balance += amount;
-				}
-			}
-		}
-
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			if(response.success){
 				$scope.event_data = response.data;
@@ -140,10 +164,12 @@ pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams'
 				$rootScope.edit_url = response.data.edit_url;
 			}
 			else {
-				$scope.message = response.message;
+				$rootScope.msg = response.message;
+				angular.element('#error_modal').modal('show');
 			}
 		}).error(function(response){
-			console.log(response);
+			$rootScope.msg = 'Unknown Error.';
+			angular.element('#error_modal').modal('show');
 		});
 
 		EventSrv.getPvtEventSettlements($stateParams.slug).success(function(response){
@@ -153,7 +179,8 @@ pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams'
 				$scope.settlements = response.data.settlements;
 			}
 			else {
-				$scope.message = response.message;
+				$rootScope.msg = response.message;
+				angular.element('#error_modal').modal('show');
 			}
 		}).error(function(response){
 			console.log(response);
@@ -165,20 +192,25 @@ pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams'
 					if (response.success == true) {
 						$state.go($state.current, {}, {reload: true});
 					}
-					$scope.message = response.message;
+					else {
+						$rootScope.msg = response.message;
+						angular.element('#error_modal').modal('show');
+					}
 				}).error(function(response){
-					$scope.message = 'Could not delete expense.';
+					$rootScope.msg = 'Could not delete expense.';
+					angular.element('#error_modal').modal('show');
 				});
 			}
 		}
 	}
 	else {
-		$scope.message = 'Invalid URL.';
+		$rootScope.msg = 'Invalid URL.';
+		angular.element('#error_modal').modal('show');
 	}
 }]);
 
 
-pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$state,$stateParams,EventSrv,UtilsSrv){
+pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,EventSrv,UtilsSrv){
 	if($stateParams.slug){
 		var checkForTrue = function(arr){
 			var flag = false;
@@ -209,6 +241,11 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 		};
 
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
+			if (response.success != true) {
+				$rootScope.msg = response.message;
+				angular.element('#error_modal').modal('show');
+				return false;
+			}
 			$scope.event_data = response.data;
 
 			$scope.form_expense.payers[0].id = $scope.event_data.members[0].id;
@@ -226,7 +263,8 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 				});
 			}
 		}).error(function(response){
-			console.log(response);
+			$rootScope.msg = 'Unknown Error.';
+			angular.element('#error_modal').modal('show');
 		});
 
 		$scope.$watch('flag_multiple_payers',function(val){
@@ -296,7 +334,8 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 					}
 					$scope.message = response.message;	
 				}).error(function(response){
-					$scope.message = 'Some error occured.';
+					$rootScope.msg = 'Unknown Error.';
+					angular.element('#error_modal').modal('show');
 				});
 			}
 			else {
@@ -310,15 +349,20 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$state','$stateParams','Event
 					if (response.success == true) {
 						$state.go($state.current, {}, {reload: true});
 					}
-					$scope.message = response.message;
+					else {
+						$rootScope.msg = response.message;
+						angular.element('#error_modal').modal('show');
+					}
 				}).error(function(response){
-					$scope.message = 'Could not delete expense.';
+					$rootScope.msg = 'Could not delete expense.';
+					angular.element('#error_modal').modal('show');
 				});
 			}
 		}
 	}
 	else {
-		$scope.message = 'Invalid URL.';
+		$rootScope.msg = 'Invalid URL.';
+		angular.element('#error_modal').modal('show');
 	}
 }]);
 

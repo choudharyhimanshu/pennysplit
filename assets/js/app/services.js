@@ -12,6 +12,9 @@ pennysplit.service('EventSrv', ['$http','$stateParams','GLOBALS', function($http
 	this.getPvtEventSettlements = function(slug){
 		return $http.get(GLOBALS.API_BASE+'event/settlement/private/'+slug);
 	}
+	this.getPubEvent = function(slug){
+		return $http.get(GLOBALS.API_BASE+'event/view/public/'+slug);
+	}
 	this.addExpense = function(slug,form_data){
 		return $http.post(GLOBALS.API_BASE+'expense/add/'+slug,form_data);
 	}

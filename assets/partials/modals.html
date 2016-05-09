@@ -32,3 +32,20 @@
         </div>
     </div>
 </div>
+
+<!-- Error Message Modal -->
+<div class="modal fade" id="error_modal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">There is some error</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger">{{msg}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ui-sref="welcome">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -126,11 +126,15 @@
 }
 
 .team-card .keyword {
-	margin: 40px 0px 0px 0px;
+	margin: 20px 0px 0px 0px;
 	padding: 0px;
 	font-size: 25pt;
 	font-variant: small-caps;
-	line-height: 0.5em;
+	line-height: 1em;
+}
+
+.team-card .caption h3 {
+	margin-top: 10px;
 }
 
 .team-card .caption p{
