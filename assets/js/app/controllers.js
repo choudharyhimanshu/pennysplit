@@ -34,6 +34,12 @@ pennysplit.controller('CreateCtrl', ['$scope','$rootScope','$state','EventSrv', 
 		if($scope.createForm.$valid && $scope.create.members.length > 0){
 			$scope.message = 'Loading..';
 			$scope.is_loading = true;
+			for(var i=0; i<$scope.create.members.length;i++){
+				if ($scope.create.members[i].name == '' || $scope.create.members[i].name === undefined) {
+					$scope.create.members.splice(i,1);
+					i--;
+				}
+			}
 			$scope.create.members.push({
 				id : $scope.create.members.length,
 				name : $scope.create.owner
@@ -155,7 +161,7 @@ pennysplit.controller('ViewCtrl', ['$scope','$rootScope','$stateParams','EventSr
 	}
 }]);
 
-pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,EventSrv,UtilsSrv){
+pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams','$window','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,$window,EventSrv,UtilsSrv){
 	if($stateParams.slug){
 		EventSrv.getPvtEvent($stateParams.slug).success(function(response){
 			if(response.success){
@@ -188,18 +194,22 @@ pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams'
 
 		$scope.removeExpense = function(exid){
 			if (exid !== undefined) {
-				EventSrv.deleteExpense($stateParams.slug,exid).success(function(response){
-					if (response.success == true) {
-						$state.go($state.current, {}, {reload: true});
-					}
-					else {
-						$rootScope.msg = response.message;
+				var do_delete = $window.confirm('Are you absolutely sure you want to delete?');
+
+				if(do_delete){
+					EventSrv.deleteExpense($stateParams.slug,exid).success(function(response){
+						if (response.success == true) {
+							$state.go($state.current, {}, {reload: true});
+						}
+						else {
+							$rootScope.msg = response.message;
+							angular.element('#error_modal').modal('show');
+						}
+					}).error(function(response){
+						$rootScope.msg = 'Could not delete expense.';
 						angular.element('#error_modal').modal('show');
-					}
-				}).error(function(response){
-					$rootScope.msg = 'Could not delete expense.';
-					angular.element('#error_modal').modal('show');
-				});
+					});
+				}
 			}
 		}
 	}
@@ -210,7 +220,7 @@ pennysplit.controller('EditCtrl', ['$scope','$rootScope','$state','$stateParams'
 }]);
 
 
-pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateParams','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,EventSrv,UtilsSrv){
+pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateParams','$window','EventSrv','UtilsSrv', function($scope,$rootScope,$state,$stateParams,$window,EventSrv,UtilsSrv){
 	if($stateParams.slug){
 		var checkForTrue = function(arr){
 			var flag = false;
@@ -307,6 +317,10 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 		}
 
 		$scope.submitExpense = function(flag_add_another){
+			if (flag_add_another==false && ($scope.form_expense.name == '' || $scope.form_expense.name === undefined)) {
+				$state.go('edit',{slug:$scope.event_data.slug},{reload:true});
+				return false;
+			}
 			if($scope.expenseForm.$valid && checkForTrue($scope.form_expense.payees)){
 				for (var i = 0; i < form_expense_master.payers.length; i++) {
 					form_expense_master.payers[i].amount = 0;
@@ -332,7 +346,10 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 							$state.go('edit',{slug:$scope.event_data.slug},{reload:true});
 						}
 					}
-					$scope.message = response.message;	
+					else {
+						$rootScope.msg = response.message;
+						angular.element('#error_modal').modal('show');
+					}
 				}).error(function(response){
 					$rootScope.msg = 'Unknown Error.';
 					angular.element('#error_modal').modal('show');
@@ -345,18 +362,22 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 
 		$scope.removeExpense = function(exid){
 			if (exid !== undefined) {
-				EventSrv.deleteExpense($stateParams.slug,exid).success(function(response){
-					if (response.success == true) {
-						$state.go($state.current, {}, {reload: true});
-					}
-					else {
-						$rootScope.msg = response.message;
+				var do_delete = $window.confirm('Are you absolutely sure you want to delete?');
+
+				if(do_delete){
+					EventSrv.deleteExpense($stateParams.slug,exid).success(function(response){
+						if (response.success == true) {
+							$state.go($state.current, {}, {reload: true});
+						}
+						else {
+							$rootScope.msg = response.message;
+							angular.element('#error_modal').modal('show');
+						}
+					}).error(function(response){
+						$rootScope.msg = 'Could not delete expense.';
 						angular.element('#error_modal').modal('show');
-					}
-				}).error(function(response){
-					$rootScope.msg = 'Could not delete expense.';
-					angular.element('#error_modal').modal('show');
-				});
+					});
+				}
 			}
 		}
 	}

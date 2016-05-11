@@ -74,6 +74,9 @@ class Expense {
     			$response['message'] = 'Some error occurred.';
 	    	}
 	    }
+	    else {
+	    	$response['message'] = 'Invalid Inputs.';
+	    }
 
 	    $db->close();
 	    $app->response->write(json_encode($response));

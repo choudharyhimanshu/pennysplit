@@ -29,7 +29,7 @@
 		  	      		<div class="row-fluid" ng-repeat="buddy in create.members">
 		  	      			<div class="input-group">
 		  	      				<input type="hidden" ng-init="buddy.id=$index;"/>
-			  	      			<input type="text" class="form-control" placeholder="Who were you with?" id="createFormBuddy" name="buddy{{$index}}" ng-model="buddy.name" maxlength="60" required>
+			  	      			<input type="text" class="form-control" placeholder="Who were you with?" id="createFormBuddy" name="buddy{{$index}}" ng-model="buddy.name" maxlength="60" ng-required="$index==0">
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="button" ng-click="removeMember($index)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 								</span>
