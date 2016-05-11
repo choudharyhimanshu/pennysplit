@@ -55,7 +55,7 @@ pennysplit.config(function($stateProvider, $urlRouterProvider) {
     });
 });
 
-pennysplit.run(['$rootScope', function($rootScope){
+pennysplit.run(['$rootScope','$location','$window', function($rootScope,$location,$window){
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
         // console.log(fromState,toState);
         angular.element('#error_modal').modal('hide');
@@ -64,6 +64,7 @@ pennysplit.run(['$rootScope', function($rootScope){
         // console.log(fromState,toState);
         $rootScope.stateFrom = fromState;
         $rootScope.stateFromParams = fromParams;
+        $window.ga('send', 'pageview', $location.path());
     });
 }]);
 
