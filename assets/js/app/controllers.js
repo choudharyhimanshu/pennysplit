@@ -280,14 +280,8 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 		$scope.$watch('flag_multiple_payers',function(val){
 			$scope.form_expense.payers.splice(1);
 			if(val){
-				$scope.form_expense.payers.push({
-					id : $scope.event_data.members[0].id,
-					amount : 0
-				});
-				$scope.form_expense.payers.push({
-					id : $scope.event_data.members[0].id,
-					amount : 0
-				});
+				$scope.addPayer();
+				$scope.addPayer();
 			}
 		});
 
@@ -299,10 +293,14 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 			}
 		});		
 
+		var count_payers = 1;
 		$scope.addPayer = function(){
+			if (count_payers >= $scope.event_data.members.length) {
+				count_payers = 0;
+			}
 			$scope.flag_min_payers = false;
 			$scope.form_expense.payers.push({
-				id : $scope.event_data.members[0].id,
+				id : $scope.event_data.members[count_payers++].id,
 				amount : 0
 			});
 		}

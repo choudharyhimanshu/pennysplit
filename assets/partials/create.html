@@ -54,13 +54,13 @@
 		</div>
 		<div class="col-md-5 col-md-offset-1 col-sm-12 form-create-preview">
 			<div class="row-fluid" ng-show="create.owner">
-				<h3 style="text-transform: uppercase;">Created By</h3>
+				<h3 style="font-variant: small-caps;">Created By</h3>
 				<ul>
 					<li>{{create.owner}}</li>
 				</ul>
 			</div>
 			<div class="row-fluid" ng-show="createForm.buddy0.$touched">
-				<h3 style="text-transform: uppercase;">Buddies</h3>
+				<h3 style="font-variant: small-caps;">Buddies</h3>
 				<ul>
 					<li ng-repeat="member in create.members" ng-if="member.name">{{member.name}}</li>
 				</ul>
