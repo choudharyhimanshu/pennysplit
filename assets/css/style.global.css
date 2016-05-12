@@ -27,6 +27,7 @@ body {
 .custom-navbar .navbar-nav > li {padding-right: 5px; }
 .custom-navbar .navbar-nav > li > a {color: #fff; padding-left: 5px; padding-right: 5px;}
 .custom-navbar .navbar-nav > li > a:hover {color: #fff;}
+.custom-navbar .navbar-nav > li > a:focus {color: #fff;}
 .custom-navbar .navbar-toggle {border-color: #fff;}
 .custom-navbar .navbar-toggle .icon-bar {background-color : #fff;}
 .custom-navbar .nav-btn {
