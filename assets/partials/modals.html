@@ -1,0 +1,51 @@
+<!-- Start Now Modal -->
+<div class="modal fade" id="start_now_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document" style="margin-top:10%;">
+        <div class="modal-content">
+            <div class="modal-body" style="">
+                <a type="button" class="btn azm-social azm-btn azm-border-bottom azm-facebook" disabled="disabled" style="width: 100%;border-radius: 4px;"><h5><i class="fa fa-facebook"></i> Log in with Facebook</h5></a>
+                <p>Coming soon to make splitting easy peasy!</p>
+                <h4>or</h4>
+                <a type="button" class="btn btn-block btn-login-guest" ui-sref="create" data-dismiss="modal"><h5>Quick Split</h5></a>
+                <p> Select Quick Split for a one time splitting, without logging in or entering email addresses. No spam.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Event Modal -->
+<div class="modal fade" id="share_event_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="margin-top:10%;">
+        <div class="modal-content">
+            <div class="modal-body" style="">
+                <div class="input-group">
+                    <input type="text" class="form-control" aria-label="..." ng-model="share_url" ng-value="view_url" ng-init="share_type='View Only'">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{share_type}} <span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="" ng-click="share_url=view_url;share_type='View Only';">View Only</a></li>
+                            <li><a href="" ng-click="share_url=edit_url;share_type='Editable'">Editable</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Message Modal -->
+<div class="modal fade" id="error_modal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">There is some error</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger">{{msg}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>

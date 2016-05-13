@@ -1,0 +1,125 @@
+
+.create-container {
+	padding-top: 50px;
+	padding-bottom: 50px;
+	background-color: #fff;
+}
+
+.create-view {
+	border-left: 1px solid 
+}
+
+.form-create-preview {
+	border-left: 1px solid #ecf0f1;
+	padding-bottom: 20px;
+}
+
+.form-create-preview ul {
+	padding: 0px;
+}
+
+.form-create-preview li {
+	padding: 5px 0px 5px 0px;
+	border-bottom: 2px solid #ecf0f1;
+	font-size: 12pt;
+	list-style-type: none;
+}
+
+.form-create-preview li button {
+	background: none;
+	border: none;
+}
+
+.inp-buddies div {
+	margin-top: 5px;
+}
+
+
+.inp-payer select, .inp-payer  input, .inp-payer  button {
+	margin-top: 5px;
+}
+
+.inp-payer button {
+	/*margin: 5px;*/
+	/*background: none;*/
+	/*border: none;*/
+}
+
+.inp-payer button:hover {
+	/*color: #3498db;*/
+}
+
+.panel-overview {
+	padding-bottom: 20px;
+	border-left: 1px solid #ecf0f1;
+}
+
+.panel-overview ul {
+	padding: 0px;
+}
+
+.panel-overview li {
+	color: #34495e;
+	padding: 5px 0px 5px 0px;
+	border-bottom: 2px solid #ecf0f1;
+	font-size: 12pt;
+	list-style-type: none;
+}
+
+.panel-overview li a {
+	margin: 0 5px 0 5px;
+	color: #7f8c8d;
+}
+
+.panel-overview li a:hover {
+	color: #34495e;
+}
+
+.panel-overview .title {
+	font-size: 1.2em;
+}
+
+.panel-overview .title h4{
+	margin: 5px 0px 5px 0px;
+}
+
+.panel-overview .title .glyphicon {
+	font-size: .8em;
+}
+
+.panel-overview .description {
+	font-size: .8em;
+}
+
+.panel-overview .details {
+	font-size: .8em;
+	max-height: 0px;
+	overflow: hidden;
+	-webkit-transition: max-height 1000ms ease-out;
+    -moz-transition: max-height 1000ms ease-out;
+    -o-transition: max-height 1000ms ease-out;
+    transition: max-height 1000ms ease-out;
+}
+
+.panel-overview li:hover .details {
+	max-height: 10000px;
+	-webkit-transition: max-height 1500ms ease-in;
+    -moz-transition: max-height 1500ms ease-in;
+    -o-transition: max-height 1500ms ease-in;
+    transition: max-height 1500ms ease-in;
+}
+
+.list-settlements li{
+	width: 100%;
+	height: auto;
+	background-color: #FAFAFA;
+	/*border: 1px solid black;*/
+	margin: 5px 0px 5px 0px;
+	padding: 20px;
+	list-style-type: none;
+}
+
+.list-settlements li p {
+	font-size: 12pt;
+	margin:0px;
+}
