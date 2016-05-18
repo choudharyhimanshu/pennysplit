@@ -35,7 +35,7 @@
 					  		</div>
 					  		<div class="clearfix">
 					  			<p class="pull-left"><span class="glyphicon glyphicon-arrow-right" aria-hidden="true" style="color:#16a085"></span>
-					  		{{settlement.to.name}}</p>
+					  			{{settlement.to.name}}</p>
 					  			<p class="pull-right text-info">{{settlement.amount | currency : ''}}</p>
 					  		</div>
 					  	</li>
@@ -67,7 +67,7 @@
 						</div>
 						<div class="row-fluid description">
 							<p class="text-muted">
-								Added by {{expense.added_by_name}} on {{expense.created_on * 1000 | date:'short'}}
+								Added on {{expense.created_on * 1000 | date:'short'}}
 								<br>
 								Total amout : {{event_data.currency}} {{expense.tot_amount | currency : ''}}
 							</p>

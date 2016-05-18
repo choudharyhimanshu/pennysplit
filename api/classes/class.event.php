@@ -341,11 +341,12 @@ class Event {
 				$count_exp = 0;
 
 				$prev_exid = $row['exid'];
+				$added_by = (int)($row['fk_added_by']==NULL)?-1:$row['fk_added_by'];
 				$expenses[] = array(
 					'id' => (int)$row['exid'],
 					'name' => $row['name'],
-					'added_by' => (int)$row['fk_added_by'],
-					'added_by_name' => Helper::getNameFromId($members,(int)$row['fk_added_by']),
+					'added_by' => $added_by,
+					'added_by_name' => Helper::getNameFromId($members,$added_by),
 					'created_on' => $row['created_on'],
 					'tot_amount' => 0,
 					'payers' => [],
@@ -364,11 +365,12 @@ class Event {
 				while ($row = $res->fetch_assoc()) {
 					if($row['exid'] != $prev_exid){
 						$prev_exid = $row['exid'];
+						$added_by = (int)($row['fk_added_by']==NULL)?-1:$row['fk_added_by'];
 						$expenses[] = array(
 							'id' => (int)$row['exid'],
 							'name' => $row['name'],
-							'added_by' => (int)$row['fk_added_by'],
-							'added_by_name' => Helper::getNameFromId($members,(int)$row['fk_added_by']),
+							'added_by' => $added_by,
+							'added_by_name' => Helper::getNameFromId($members,$added_by),
 							'created_on' => $row['created_on'],
 							'tot_amount' => 0,
 							'payers' => [],
