@@ -18,7 +18,8 @@ class Expense {
 
 	    $slug = isset($slug) ? Helper::sanitize($slug) : '';
 	    $name = isset($params['name']) ? $params['name'] : '';
-	    $added_by = isset($params['added_by']) ? $params['added_by'] : '';
+	    $added_by = isset($params['added_by']) ? $params['added_by'] : "NULL";
+	    $added_by = !empty($params['added_by']) ? $added_by : "NULL";
 	    $payers = isset($params['payers']) ? $params['payers'] : [];
 	    $payees = isset($params['payees']) ? $params['payees'] : [];
 
@@ -36,11 +37,11 @@ class Expense {
 	    	'data' => NULL
 	    );
 
-	    if($slug != '' && $name != '' && $added_by !='' && sizeof($payers)>0 && sizeof($payees)>0){
+	    if($slug != '' && $name != '' && sizeof($payers)>0 && sizeof($payees)>0){
 	    	$time = time();
 	    	$fk_eid = Security::getIdFromSlug($slug);
 	    	if($fk_eid != NULL){
-		    	$res = $db->conn->query("INSERT INTO expenses (fk_eid,name,fk_added_by,created_on,tot_amount) VALUES ($fk_eid,'$name','$added_by',$time,$tot_amount)");
+		    	$res = $db->conn->query("INSERT INTO expenses (fk_eid,name,fk_added_by,created_on,tot_amount) VALUES ($fk_eid,'$name',$added_by,$time,$tot_amount)");
 	    		if($res){
 		    		$fk_xid = $db->conn->insert_id;
 		    		$values = [];
