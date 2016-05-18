@@ -29,11 +29,18 @@ class Event {
 
 	    if($title != '' && $owner != '' && sizeof($members)>0){
 	    	$time = time();
+	    	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+	    	    $ip = $_SERVER['HTTP_CLIENT_IP'];
+	    	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+	    	    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	    	} else {
+	    	    $ip = $_SERVER['REMOTE_ADDR'];
+	    	}
 	    	$title_slug = Helper::slugify($title);
 	    	$slug = $title_slug.'-'.Helper::generateRandomString();
 	    	$view_slug = $title_slug.'-'.Helper::generateRandomString();
 
-	    	$res = $db->conn->query("INSERT INTO event (slug,view_slug,title,currency,created_by,created_on) VALUES ('$slug','$view_slug','$title','$currency','$owner',$time)");
+	    	$res = $db->conn->query("INSERT INTO event (slug,view_slug,title,currency,created_by,created_on,user_ip) VALUES ('$slug','$view_slug','$title','$currency','$owner',$time,'$ip')");
 	    	if($res){
 	    		$fkeid = $db->conn->insert_id;
 	    		$values = [];
