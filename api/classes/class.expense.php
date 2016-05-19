@@ -23,12 +23,18 @@ class Expense {
 	    $payers = isset($params['payers']) ? $params['payers'] : [];
 	    $payees = isset($params['payees']) ? $params['payees'] : [];
 
-	    $tot_amount = 0.0;
-
+	    $tot_amount_paid = 0.0;
 	    for ($i=0; $i < sizeof($payers); $i++) {
 	    	$payers[$i]['id'] = (int)$payers[$i]['id'];
-	    	$payers[$i]['amount'] = (float)$payers[$i]['amount'];
-	    	$tot_amount += $payers[$i]['amount'];
+	    	$payers[$i]['amount'] = (float)round($payers[$i]['amount'],2);
+	    	$tot_amount_paid += $payers[$i]['amount'];
+	    }
+
+	    $tot_amount_shared = 0.0;
+	    for ($i=0; $i < sizeof($payees); $i++) {
+	    	$payees[$i]['id'] = (int)$payees[$i]['id'];
+	    	$payees[$i]['amount'] = (float)round($payees[$i]['amount'],2);
+	    	$tot_amount_shared += $payees[$i]['amount'];
 	    }
 
 	    $response = array(
@@ -37,11 +43,11 @@ class Expense {
 	    	'data' => NULL
 	    );
 
-	    if($slug != '' && $name != '' && sizeof($payers)>0 && sizeof($payees)>0){
+	    if($slug != '' && $name != '' && sizeof($payers)>0 && sizeof($payees)>0 && $tot_amount_paid==$tot_amount_shared){
 	    	$time = time();
 	    	$fk_eid = Security::getIdFromSlug($slug);
 	    	if($fk_eid != NULL){
-		    	$res = $db->conn->query("INSERT INTO expenses (fk_eid,name,fk_added_by,created_on,tot_amount) VALUES ($fk_eid,'$name',$added_by,$time,$tot_amount)");
+		    	$res = $db->conn->query("INSERT INTO expenses (fk_eid,name,fk_added_by,created_on,tot_amount) VALUES ($fk_eid,'$name',$added_by,$time,$tot_amount_paid)");
 	    		if($res){
 		    		$fk_xid = $db->conn->insert_id;
 		    		$values = [];
@@ -52,9 +58,9 @@ class Expense {
 		    		if($res){
 		    			$values = [];
 		    			foreach( $payees as $payee ) {
-		    			    $values[] = '('.$fk_xid.','.$payee['id'].')';
+		    			    $values[] = '('.$fk_xid.','.$payee['id'].','.$payee['amount'].')';
 		    			}
-		    			$res = $db->conn->query('INSERT INTO payees (fk_exid,mid) VALUES '.implode(',', $values));
+		    			$res = $db->conn->query('INSERT INTO payees (fk_exid,mid,amount) VALUES '.implode(',', $values));
 		    			if($res){
 		    				$response['success'] = TRUE;
 		    				$response['message'] = "Successfully added expense.";

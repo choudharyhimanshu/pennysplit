@@ -61,16 +61,35 @@
 				  	</div>
 				  	<div class="form-group">
 				  		<label for="expenseFormPayee">Shared Between</label>
-				  		<div class="checkbox">
-				  		    <label>
-				  		      	<input type="checkbox" value="{{member.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-init="flag_share_all = true" ng-model="flag_share_all">All
-				  		    </label>
+				  		<div class="row-fluid">
+				  			<div style="display:inline-block;margin-right:20px;">
+				  				<div class="checkbox">
+				  				    <label>
+				  				      	<input type="checkbox" ng-init="flag_share_all = true" ng-model="flag_share_all">All
+				  				    </label>
+				  				</div>
+				  			</div>
+				  			<div style="display:inline-block;" ng-show="!flag_share_all">
+				  				<div class="checkbox">
+				  				    <label>
+				  				      	<input type="checkbox" ng-init="flag_split_equally = true" ng-model="flag_split_equally">Split Equally
+				  				    </label>
+				  				</div>
+				  			</div>				  			
 				  		</div>
-				  		<div class="checkbox" ng-show="!flag_share_all" ng-repeat="payee in form_expense.payees | orderBy:'name'">
-				  		    <label>
-				  		      	<input type="checkbox" value="{{payee.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-model="payee.flag">{{payee.name}}
-				  		    </label>
-				  		</div>
+
+				  		<div class="row" ng-show="!flag_share_all" ng-repeat="payee in form_expense.payees | orderBy:'name'" style="margin-top:5px;">
+				  			<div class="col-md-8">
+					  			<div class="checkbox" style="margin : 0 0 5px 0;">
+				  				    <label>
+				  				      	<input type="checkbox" value="{{payee.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-model="payee.flag">{{payee.name}}
+				  				    </label>
+					  			</div>
+				  			</div>
+				  			<div class="col-md-4" ng-if="!flag_split_equally">
+				  				<input type="number" step="0.1" min="0" max="10000000" class="form-control input-sm" ng-model="payee.amount" placeholder="Amount" required>
+				  			</div>
+				  		</div>			  		
 				  	</div>
 				  	<div class="form-group">
   			  			<div class="row">

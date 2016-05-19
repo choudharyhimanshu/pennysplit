@@ -397,7 +397,7 @@ class Event {
 			}
 		}
 
-		$res = $db->conn->query("SELECT expenses.exid, expenses.name, payees.mid as `payee_id` FROM expenses LEFT JOIN payees ON payees.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
+		$res = $db->conn->query("SELECT expenses.exid, expenses.name, payees.mid as `payee_id`,payees.amount as `payee_amount` FROM expenses LEFT JOIN payees ON payees.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
 
 		if($res){
 			if($res->num_rows > 0){
@@ -410,7 +410,8 @@ class Event {
 				if(Helper::getIndexFromId($members,(int)$row['payee_id']) !== NULL){
 					$expenses[$count_exp]['payees'][] = array(
 						'id' => (int)$row['payee_id'],
-						'name' => Helper::getNameFromId($members,(int)$row['payee_id'])
+						'name' => Helper::getNameFromId($members,(int)$row['payee_id']),
+						'amount' => (double)$row['payee_amount']
 					);
 				}
 
@@ -424,7 +425,8 @@ class Event {
 						if(Helper::getIndexFromId($members,(int)$row['payee_id']) !== NULL){
 							$expenses[$count_exp]['payees'][] = array(
 								'id' => (int)$row['payee_id'],
-								'name' => Helper::getNameFromId($members,(int)$row['payee_id'])
+								'name' => Helper::getNameFromId($members,(int)$row['payee_id']),
+								'amount' => (double)$row['payee_amount']
 							);
 						}
 					}
@@ -458,14 +460,13 @@ class Event {
 				$index = Helper::getIndexFromId($balances,$payer['id']);
 				if ($index !== NULL) {
     				$balances[$index]['balance'] += $payer['amount'];
-    				$total_amount += round($payer['amount'],2);
+    				$total_amount += $payer['amount'];
 				}
 			}
-			$num_sharers = sizeof($expense['payees']);
 			foreach ($expense['payees'] as $payee) {
 				$index = Helper::getIndexFromId($balances,$payee['id']);
 				if ($index !== NULL) {
-    				$balances[$index]['balance'] -= round($total_amount/$num_sharers,2);
+    				$balances[$index]['balance'] -= $payee['amount'];
 				}
 			}
 			$expense['tot_amount'] = $total_amount;

@@ -264,6 +264,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 				$scope.form_expense.payees.push({
 					id : response.data.members[i].id,
 					name : response.data.members[i].name,
+					amount : 0,
 					flag : true
 				});
 				form_expense_master.payers.push({
@@ -320,6 +321,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 				return false;
 			}
 			if($scope.expenseForm.$valid && checkForTrue($scope.form_expense.payees)){
+				var total_paid = 0.0,total_shared = 0.0;
 				for (var i = 0; i < form_expense_master.payers.length; i++) {
 					form_expense_master.payers[i].amount = 0;
 				}
@@ -328,11 +330,39 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 				form_expense_master.added_by = $scope.form_expense.added_by;
 				for (var i = 0; i < $scope.form_expense.payers.length; i++) {
 					form_expense_master.payers[UtilsSrv.getIndexbyId(form_expense_master.payers,$scope.form_expense.payers[i].id)].amount += $scope.form_expense.payers[i].amount;
+					total_paid += $scope.form_expense.payers[i].amount;
 				}
 				for (var i = 0; i < $scope.form_expense.payees.length; i++) {
 					if($scope.form_expense.payees[i].flag == true){
+						$scope.form_expense.payees[i].amount = +$scope.form_expense.payees[i].amount.toFixed(2);
 						form_expense_master.payees.push($scope.form_expense.payees[i]);
+						if (!$scope.flag_split_equally) {
+							total_shared += $scope.form_expense.payees[i].amount;
+						}
 					}
+				}
+
+				if($scope.flag_split_equally){
+					for (var i = 0; i < form_expense_master.payees.length; i++){
+						form_expense_master.payees[i].amount = +(total_paid/(form_expense_master.payees.length)).toFixed(2);
+						total_shared += +(form_expense_master.payees[i].amount).toFixed(2);
+					}
+				}
+
+				total_shared = +total_shared.toFixed(2);
+				total_paid = +total_paid.toFixed(2);
+
+				var diff = +(total_shared-total_paid).toFixed(2);
+
+				if(Math.abs(diff)<0.1){
+					form_expense_master.payees[form_expense_master.payees.length-1].amount -= diff;
+					total_shared -= diff;
+				}
+
+				if (total_paid != total_shared) {
+					$rootScope.msg = 'Total paid and shared amounts do not match. Please double-check the amounts.';
+					angular.element('#error_modal').modal('show');
+					return false;
 				}
 
 				EventSrv.addExpense($scope.event_data.slug,form_expense_master).success(function(response){
