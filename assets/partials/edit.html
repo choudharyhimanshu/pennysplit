@@ -76,7 +76,7 @@
 							<h5>Paid by</h5>
 							<p class="text-muted" ng-repeat="payer in expense.payers| orderBy : 'amount': true" ng-if="payer.amount > 0">{{payer.name}} <span class="pull-right">{{event_data.currency}} {{payer.amount | currency : ''}}</span></p>
 							<h5>Shared between</h5>
-							<p class="text-muted"><span ng-repeat="payee in expense.payees | orderBy : 'name'">{{($index != expense.payees.length-1)?payee.name+', ':payee.name}} </span></p>
+							<p class="text-muted" ng-repeat="payee in expense.payees| orderBy : 'amount': true" ng-if="payee.amount > 0">{{payee.name}} <span class="pull-right">{{event_data.currency}} {{payee.amount | currency : ''}}</span></p>
 						</div>
 					</li>
 				</ul>

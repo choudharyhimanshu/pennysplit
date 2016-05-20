@@ -62,14 +62,14 @@
 				  	<div class="form-group">
 				  		<label for="expenseFormPayee">Shared Between</label>
 				  		<div class="row-fluid">
-				  			<div style="display:inline-block;margin-right:20px;">
+				  			<div ng-show="flag_split_equally" style="display:inline-block;margin-right:20px;">
 				  				<div class="checkbox">
 				  				    <label>
 				  				      	<input type="checkbox" ng-init="flag_share_all = true" ng-model="flag_share_all">All
 				  				    </label>
 				  				</div>
 				  			</div>
-				  			<div style="display:inline-block;" ng-show="!flag_share_all">
+				  			<div style="display:inline-block;">
 				  				<div class="checkbox">
 				  				    <label>
 				  				      	<input type="checkbox" ng-init="flag_split_equally = true" ng-model="flag_split_equally">Split Equally
@@ -78,7 +78,7 @@
 				  			</div>				  			
 				  		</div>
 
-				  		<div class="row" ng-show="!flag_share_all" ng-repeat="payee in form_expense.payees | orderBy:'name'" style="margin-top:5px;">
+				  		<div class="row" ng-show="!flag_share_all || !flag_split_equally" ng-repeat="payee in form_expense.payees | orderBy:'name'" style="margin-top:5px;">
 				  			<div class="col-md-8">
 					  			<div class="checkbox" style="margin : 0 0 5px 0;">
 				  				    <label>
