@@ -315,6 +315,14 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 			}
 		}
 
+		$scope.totalSpent = function(){
+			var amount = 0.0;
+			for (var i = 0; i < $scope.form_expense.payers.length; i++){
+				amount += $scope.form_expense.payers[i].amount;
+			}
+			return amount;
+		}
+
 		$scope.submitExpense = function(flag_add_another){
 			if (flag_add_another==false && ($scope.form_expense.name == '' || $scope.form_expense.name === undefined)) {
 				$state.go('edit',{slug:$scope.event_data.slug},{reload:true});
