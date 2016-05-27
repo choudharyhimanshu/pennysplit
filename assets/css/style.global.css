@@ -133,3 +133,29 @@ body {
 	margin: 0px;
 	background: rgba(256,256,256,.5);
 }
+
+.btn-custom-blue {
+	color: #fff !important;
+	background-color: #34495e !important;
+	border-color: #34495e !important;
+	cursor: pointer;
+}
+
+.btn-custom-blue:hover, .btn-custom-blue:focus{
+	color: #fff !important;
+	background-color: #2c3e50 !important;
+	border-color: #2c3e50 !important;
+}
+
+.btn-custom-green {
+	color: #fff !important;
+	background-color: #16a085 !important;
+	border-color: #16a085 !important;
+	cursor: pointer;
+}
+
+.btn-custom-green:hover, .btn-custom-green:focus{
+	color: #fff !important;
+	background-color: #1abc9c !important;
+	border-color: #1abc9c !important;
+}
