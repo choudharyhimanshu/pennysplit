@@ -258,7 +258,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 			}
 			$scope.event_data = response.data;
 
-			$scope.form_expense.payers[0].id = $scope.event_data.members[0].id;
+			$scope.form_expense.payers[0].id = UtilsSrv.maxId($scope.event_data.members);
 
 			for (var i = 0; i < response.data.members.length; i++) {
 				$scope.form_expense.payees.push({
@@ -294,7 +294,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 			}
 		});		
 
-		var count_payers = 1;
+		var count_payers = 0;
 		$scope.addPayer = function(){
 			if (count_payers >= $scope.event_data.members.length) {
 				count_payers = 0;
