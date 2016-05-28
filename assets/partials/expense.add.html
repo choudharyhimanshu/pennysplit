@@ -84,14 +84,15 @@
 				  			<div class="col-md-8">
 					  			<div class="checkbox" style="margin : 0 0 5px 0;">
 				  				    <label>
-				  				      	<input type="checkbox" value="{{payee.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-model="payee.flag">{{payee.name}}
+				  				      	<input type="checkbox" value="{{payee.id}}" name="expenseFormPayee" id="expenseFormPayee" ng-model="payee.flag" ng-change="updatePayeesAmount()">{{payee.name}}
 				  				    </label>
 					  			</div>
 				  			</div>
 				  			<div class="col-md-4" ng-if="!flag_split_equally">
-				  				<input type="number" step="0.1" min="0" max="10000000" class="form-control input-sm" ng-model="payee.amount" placeholder="Amount" required>
+				  				<input type="number" step="0.1" min="0" max="10000000" class="form-control input-sm" ng-model="payee.amount" placeholder="Amount" ng-model-options="{ updateOn: 'blur' }" ng-change="updatePayeesAmount()" required>
 				  			</div>
-				  		</div>			  		
+				  		</div>
+				  		<p class="help-block" style="margin-top:10px;" ng-show="!flag_split_equally && remainingAmount()>0">Remaining <span class="pull-right">{{event_data.currency}} {{remainingAmount() | currency : ''}}</span></p>		  		
 				  	</div>
 				  	<div class="form-group">
   			  			<div class="row">

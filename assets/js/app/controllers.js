@@ -292,7 +292,7 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 					$scope.form_expense.payees[i].flag = true;
 				}
 			}
-		});		
+		});
 
 		var count_payers = 0;
 		$scope.addPayer = function(){
@@ -321,6 +321,38 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 				amount += $scope.form_expense.payers[i].amount;
 			}
 			return amount;
+		}
+
+		$scope.remainingAmount = function(){
+			var amount = 0.0;
+			for (var i = 0; i < $scope.form_expense.payees.length; i++){
+				if($scope.form_expense.payees[i].flag == true){
+					amount += $scope.form_expense.payees[i].amount;
+				}
+			}
+			return $scope.totalSpent()-amount;
+		}
+
+		var remainingPayees = function(){
+			var count = 0;
+			var payee;
+			for (var i = 0; i < $scope.form_expense.payees.length; i++){
+				payee = $scope.form_expense.payees[i];
+				if(payee.flag == true && payee.amount<=0){
+					count++;
+				}
+			}
+			return count;
+		}
+
+		$scope.updatePayeesAmount = function(){
+			if(remainingPayees() == 1){
+				for (var i = 0; i < $scope.form_expense.payees.length; i++){
+					if($scope.form_expense.payees[i].flag == true && $scope.form_expense.payees[i].amount==0){
+						$scope.form_expense.payees[i].amount = $scope.remainingAmount();
+					}
+				}
+			}
 		}
 
 		$scope.submitExpense = function(flag_add_another){
