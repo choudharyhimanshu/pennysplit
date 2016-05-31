@@ -292,7 +292,13 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 					$scope.form_expense.payees[i].flag = true;
 				}
 			}
-		});		
+		});
+
+		$scope.$watch('flag_split_equally',function(val,pre_val){
+			if(val && pre_val==false){
+				$scope.flag_share_all = false;
+			}
+		});
 
 		var count_payers = 0;
 		$scope.addPayer = function(){
@@ -323,8 +329,46 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 			return amount;
 		}
 
+		$scope.remainingAmount = function(){
+			var amount = 0.0;
+			for (var i = 0; i < $scope.form_expense.payees.length; i++){
+				if($scope.form_expense.payees[i].flag == true){
+					amount += $scope.form_expense.payees[i].amount;
+				}
+			}
+			if($scope.totalSpent() == 0){
+				return 0;
+			}
+			if ($scope.flag_split_percentage){
+				return 100-amount;			
+			}
+			return $scope.totalSpent()-amount;
+		}
+
+		var remainingPayees = function(){
+			var count = 0;
+			var payee;
+			for (var i = 0; i < $scope.form_expense.payees.length; i++){
+				payee = $scope.form_expense.payees[i];
+				if(payee.flag == true && payee.amount<=0){
+					count++;
+				}
+			}
+			return count;
+		}
+
+		$scope.updatePayeesAmount = function(){
+			if(remainingPayees() == 1){
+				for (var i = 0; i < $scope.form_expense.payees.length; i++){
+					if($scope.form_expense.payees[i].flag == true && $scope.form_expense.payees[i].amount==0){
+						$scope.form_expense.payees[i].amount = $scope.remainingAmount();
+					}
+				}
+			}
+		}
+
 		$scope.submitExpense = function(flag_add_another){
-			if (flag_add_another==false && ($scope.form_expense.name == '' || $scope.form_expense.name === undefined)) {
+			if (flag_add_another==false && (($scope.form_expense.name == '' || $scope.form_expense.name === undefined) && $scope.totalSpent() == 0)) {
 				$state.go('edit',{slug:$scope.event_data.slug},{reload:true});
 				return false;
 			}
@@ -344,18 +388,37 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 					if($scope.form_expense.payees[i].flag == true){
 						$scope.form_expense.payees[i].amount = +$scope.form_expense.payees[i].amount.toFixed(2);
 						form_expense_master.payees.push($scope.form_expense.payees[i]);
-						if (!$scope.flag_split_equally) {
-							total_shared += $scope.form_expense.payees[i].amount;
-						}
 					}
 				}
 
-				if($scope.flag_split_equally){
+				if ($scope.flag_split_percentage){
+					var total_percentage = 0;
+					for (var i = 0; i < form_expense_master.payees.length; i++){
+						total_percentage += +(form_expense_master.payees[i].amount).toFixed(2);
+					}
+					if(total_percentage != 100){
+						$rootScope.msg = 'Total paid and shared amounts do not match. Please double-check the amounts.';
+						angular.element('#error_modal').modal('show');
+						return false;
+					}
+					for (var i = 0; i < form_expense_master.payees.length; i++){
+						form_expense_master.payees[i].amount = +(total_paid*(form_expense_master.payees[i].amount/100)).toFixed(2);
+						total_shared += +(form_expense_master.payees[i].amount).toFixed(2);
+					}
+				}
+				else if (!$scope.flag_split_equally) {
+					for (var i = 0; i < form_expense_master.payees.length; i++){
+						total_shared += +(form_expense_master.payees[i].amount).toFixed(2);
+					}
+				}
+				else {
 					for (var i = 0; i < form_expense_master.payees.length; i++){
 						form_expense_master.payees[i].amount = +(total_paid/(form_expense_master.payees.length)).toFixed(2);
 						total_shared += +(form_expense_master.payees[i].amount).toFixed(2);
 					}
 				}
+
+				$scope.flag_split_percentage = false;
 
 				total_shared = +total_shared.toFixed(2);
 				total_paid = +total_paid.toFixed(2);
