@@ -39,7 +39,7 @@ class General {
 
             if($res){
                 $response['success'] = TRUE;
-                $response['message'] = 'Subscribed. :)';
+                $response['message'] = 'Thanks for the love.';
             }
             else {
                 if($db->conn->errno == 1062){

@@ -10,8 +10,6 @@
 
 	define('APP_BASE', 'http://local.pennysplit.com/#');
 	define('API_BASE', 'http://local.pennysplit.com/api');
-	define('PENNY_SALT', 'k!cK$0me@s$');
-	
 
 	include 'db_config.php';
 	include 'classes/class.db.php';
