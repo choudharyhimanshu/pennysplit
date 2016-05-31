@@ -18,6 +18,7 @@
 	$app->get('/event/settlement/private/:slug', 'Event:getPvtSettlements');
 	$app->post('/expense/add/:slug', 'Expense:add');
 	$app->delete('/expense/delete/:slug/:exid', 'Expense:delete');
+	$app->post('/subscribe', 'General:subscribe');
 
 	$app->run();
 ?>

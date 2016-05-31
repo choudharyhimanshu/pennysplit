@@ -19,6 +19,7 @@
 	include 'classes/class.expense.php';
 	include 'classes/class.helper.php';
 	include 'classes/class.security.php';
+	include 'classes/class.general.php';
 
 	require 'vendor/autoload.php';
 
