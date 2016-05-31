@@ -29,11 +29,18 @@ class Event {
 
 	    if($title != '' && $owner != '' && sizeof($members)>0){
 	    	$time = time();
+	    	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+	    	    $ip = $_SERVER['HTTP_CLIENT_IP'];
+	    	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+	    	    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	    	} else {
+	    	    $ip = $_SERVER['REMOTE_ADDR'];
+	    	}
 	    	$title_slug = Helper::slugify($title);
 	    	$slug = $title_slug.'-'.Helper::generateRandomString();
 	    	$view_slug = $title_slug.'-'.Helper::generateRandomString();
 
-	    	$res = $db->conn->query("INSERT INTO event (slug,view_slug,title,currency,created_by,created_on) VALUES ('$slug','$view_slug','$title','$currency','$owner',$time)");
+	    	$res = $db->conn->query("INSERT INTO event (slug,view_slug,title,currency,created_by,created_on,user_ip) VALUES ('$slug','$view_slug','$title','$currency','$owner',$time,'$ip')");
 	    	if($res){
 	    		$fkeid = $db->conn->insert_id;
 	    		$values = [];
@@ -341,11 +348,12 @@ class Event {
 				$count_exp = 0;
 
 				$prev_exid = $row['exid'];
+				$added_by = (int)($row['fk_added_by']==NULL)?-1:$row['fk_added_by'];
 				$expenses[] = array(
 					'id' => (int)$row['exid'],
 					'name' => $row['name'],
-					'added_by' => (int)$row['fk_added_by'],
-					'added_by_name' => Helper::getNameFromId($members,(int)$row['fk_added_by']),
+					'added_by' => $added_by,
+					'added_by_name' => Helper::getNameFromId($members,$added_by),
 					'created_on' => $row['created_on'],
 					'tot_amount' => 0,
 					'payers' => [],
@@ -364,11 +372,12 @@ class Event {
 				while ($row = $res->fetch_assoc()) {
 					if($row['exid'] != $prev_exid){
 						$prev_exid = $row['exid'];
+						$added_by = (int)($row['fk_added_by']==NULL)?-1:$row['fk_added_by'];
 						$expenses[] = array(
 							'id' => (int)$row['exid'],
 							'name' => $row['name'],
-							'added_by' => (int)$row['fk_added_by'],
-							'added_by_name' => Helper::getNameFromId($members,(int)$row['fk_added_by']),
+							'added_by' => $added_by,
+							'added_by_name' => Helper::getNameFromId($members,$added_by),
 							'created_on' => $row['created_on'],
 							'tot_amount' => 0,
 							'payers' => [],
@@ -388,7 +397,7 @@ class Event {
 			}
 		}
 
-		$res = $db->conn->query("SELECT expenses.exid, expenses.name, payees.mid as `payee_id` FROM expenses LEFT JOIN payees ON payees.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
+		$res = $db->conn->query("SELECT expenses.exid, expenses.name, payees.mid as `payee_id`,payees.amount as `payee_amount` FROM expenses LEFT JOIN payees ON payees.fk_exid = expenses.exid WHERE expenses.fk_eid = $eid ORDER BY exid ASC");
 
 		if($res){
 			if($res->num_rows > 0){
@@ -401,7 +410,8 @@ class Event {
 				if(Helper::getIndexFromId($members,(int)$row['payee_id']) !== NULL){
 					$expenses[$count_exp]['payees'][] = array(
 						'id' => (int)$row['payee_id'],
-						'name' => Helper::getNameFromId($members,(int)$row['payee_id'])
+						'name' => Helper::getNameFromId($members,(int)$row['payee_id']),
+						'amount' => (double)$row['payee_amount']
 					);
 				}
 
@@ -415,7 +425,8 @@ class Event {
 						if(Helper::getIndexFromId($members,(int)$row['payee_id']) !== NULL){
 							$expenses[$count_exp]['payees'][] = array(
 								'id' => (int)$row['payee_id'],
-								'name' => Helper::getNameFromId($members,(int)$row['payee_id'])
+								'name' => Helper::getNameFromId($members,(int)$row['payee_id']),
+								'amount' => (double)$row['payee_amount']
 							);
 						}
 					}
@@ -449,14 +460,13 @@ class Event {
 				$index = Helper::getIndexFromId($balances,$payer['id']);
 				if ($index !== NULL) {
     				$balances[$index]['balance'] += $payer['amount'];
-    				$total_amount += round($payer['amount'],2);
+    				$total_amount += $payer['amount'];
 				}
 			}
-			$num_sharers = sizeof($expense['payees']);
 			foreach ($expense['payees'] as $payee) {
 				$index = Helper::getIndexFromId($balances,$payee['id']);
 				if ($index !== NULL) {
-    				$balances[$index]['balance'] -= round($total_amount/$num_sharers,2);
+    				$balances[$index]['balance'] -= $payee['amount'];
 				}
 			}
 			$expense['tot_amount'] = $total_amount;

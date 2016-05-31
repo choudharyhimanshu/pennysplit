@@ -79,6 +79,12 @@
 	font-size: 1.2em;
 }
 
+.panel-overview .total-amount {
+	font-size:14px;
+	color:#31708f;
+	font-weight:bold;
+}
+
 .panel-overview .title h4{
 	margin: 5px 0px 5px 0px;
 }
@@ -122,4 +128,14 @@
 .list-settlements li p {
 	font-size: 12pt;
 	margin:0px;
+}
+
+.event-header {
+	padding-bottom:10px;
+	border-bottom:1px solid #ecf0f1;
+}
+
+.event-header p {
+	padding-left:2px;
+	margin-bottom: 0px
 }
