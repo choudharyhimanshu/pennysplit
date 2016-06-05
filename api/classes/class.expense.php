@@ -43,7 +43,7 @@ class Expense {
 	    	'data' => NULL
 	    );
 
-	    if($slug != '' && $name != '' && sizeof($payers)>0 && sizeof($payees)>0 && $tot_amount_paid==$tot_amount_shared){
+	    if($slug != '' && $name != '' && sizeof($payers)>0 && sizeof($payees)>0 && abs($tot_amount_paid-$tot_amount_shared)<0.001){
 	    	$time = time();
 	    	$fk_eid = Security::getIdFromSlug($slug);
 	    	if($fk_eid != NULL){
