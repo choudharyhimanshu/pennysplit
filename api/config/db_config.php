@@ -7,6 +7,6 @@
 
 	define('DB_HOSTNAME', 'localhost');
 	define('DB_USERNAME', 'root');
-	define('DB_PASSWORD', '12298');
+	define('DB_PASSWORD', 'dell');
 	define('DB_DATABASE', 'pennysplit');
 ?>
