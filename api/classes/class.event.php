@@ -114,7 +114,7 @@ class Event {
 	    				}
 	    				$res = $db->conn->query('INSERT INTO buddies (fk_eid,mid,name,added_on) VALUES '.implode(',', $values));
 	    				if($res) {
-	    					$res = SELF::deleteMembers($fkeid,$delete_members);
+	    					$res = SELF::deleteMembers($fkeid,$delete_members); // Function TO BE FIXED
 	    					if($res){
 	    						$response['success'] = TRUE;
 	    						$response['message'] = "Successfully updated event.";
@@ -126,7 +126,15 @@ class Event {
 	    						);
 	    					}
 	    					else {
-			    				$response['message'] = "Unable to delete buddies.";
+	    						// TO BE FIXED
+	    						$response['success'] = TRUE;
+			    				$response['message'] = "Could not delete buddies from expenses.";
+			    				$response['data'] = array(
+			    					'title' => $title,
+			    					'currency' => $currency,
+			    					'owner' => $owner,
+			    					'slug' => $slug
+			    				);
 	    					}
 	    				}
 	    				else {

@@ -436,6 +436,14 @@ pennysplit.controller('AddExpenseCtrl', ['$scope','$rootScope','$state','$stateP
 					return false;
 				}
 
+				for (var i = 0; i < form_expense_master.payers.length; i++) {
+					if(form_expense_master.payers[i].amount==0){
+						form_expense_master.payers.splice(i,1);
+						i--;
+					}
+				}
+
+
 				EventSrv.addExpense($scope.event_data.slug,form_expense_master).success(function(response){
 					if(response.success == true){
 						if (flag_add_another) {
